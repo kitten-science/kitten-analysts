@@ -145,7 +145,7 @@ jobs:
           merge-similar: true
           prerelease: false
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          title: v${{ needs.versions.outputs.RELEASE_VERSION }}
+          title: v${{ needs.changelog.outputs.version }}
           with-authors: false
 
   publish-npm:
