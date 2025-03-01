@@ -14,6 +14,10 @@
     "url": "https://github.com/kitten-science/kitten-analysts/issues"
   },
   "type": "module",
+  "scripts": {
+    "preversion": "make lint test",
+    "postversion": "git push"
+  },
   "exports": {
     "./*.js": {
       "types": "./lib/*.d.ts",
@@ -23,20 +27,6 @@
   "files": [
     "lib"
   ],
-  "scripts": {
-    "build": "yarn run build:all",
-    "ka:build": "node build.js && vite --config vite.config.inject.js build",
-    "ka:compose:build": "docker-compose build",
-    "ka:compose:down": "docker-compose down",
-    "ka:compose:refresh": "yarn run ka:compose:build; yarn run ka:compose:down; yarn run ka:compose:up -d",
-    "ka:compose:up": "docker-compose up",
-    "ka:preview": "DEV_BUILD=true vite --config vite.config.userscript.js build",
-    "ka:release": "MINIFY=true vite --config vite.config.userscript.js build; vite --config vite.config.userscript.js build",
-    "ka:start": "node output/entrypoint-backend.js",
-    "lint": "yarn run lint:all",
-    "test": "echo This project has no tests.",
-    "whoami": "echo kitten-analysts"
-  },
   "dependencies": {
     "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-ed7e6ea",
     "@koa/bodyparser": "5.1.1",
