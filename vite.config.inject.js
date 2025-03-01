@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import manifest from "./package.json" with { type: "json" };
 
 const filename = "kitten-analysts.inject.js";
 
