@@ -3,8 +3,8 @@ import manifest from "./package.json" with { type: "json" };
 
 const filename = "kitten-analysts.inject.js";
 
-const KA_RELEASE_CHANNEL = JSON.stringify(process.env.KA_RELEASE_CHANNEL ?? "fixed");
-const KA_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.version}-live`);
+const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
+const RELEASE_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.version}-live`);
 
 export default defineConfig({
   build: {
@@ -27,7 +27,7 @@ export default defineConfig({
   },
   define: {
     KA_CONNECT_BACKEND: JSON.stringify(process.env.KA_CONNECT_BACKEND ?? true),
-    KA_RELEASE_CHANNEL,
-    KA_VERSION,
+    RELEASE_CHANNEL,
+    RELEASE_VERSION,
   },
 });

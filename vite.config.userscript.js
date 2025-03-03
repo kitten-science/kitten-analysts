@@ -9,8 +9,8 @@ const filename = ["kitten-analysts", `-${versionString}`, minify ? ".min" : "", 
   "",
 );
 
-const KA_RELEASE_CHANNEL = JSON.stringify(process.env.KA_RELEASE_CHANNEL ?? "fixed");
-const KA_VERSION = JSON.stringify(versionString);
+const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
+const RELEASE_VERSION = JSON.stringify(versionString);
 
 export default defineConfig({
   plugins: [
@@ -41,7 +41,7 @@ export default defineConfig({
     },
   },
   define: {
-    KA_RELEASE_CHANNEL,
-    KA_VERSION,
+    RELEASE_CHANNEL,
+    RELEASE_VERSION,
   },
 });
