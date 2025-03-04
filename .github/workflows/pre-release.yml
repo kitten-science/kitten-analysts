@@ -11,11 +11,6 @@ on:
         description: Allow tags to be moved? Requires GitHub Release.
         required: false
         type: boolean
-      publish-documentation:
-        default: false
-        description: Update the documentation website?
-        required: false
-        type: boolean
       publish-github-release:
         default: false
         description: Create a GitHub release?
@@ -45,7 +40,6 @@ jobs:
     name: Determine configuration
     outputs:
       move-tags: ${{ github.event_name == 'workflow_dispatch' && inputs.move-tags || 'false' }}
-      publish-documentation: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-documentation || 'false' }}
       publish-github-release: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-github-release || 'false' }}
       publish-npm: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-npm || 'false' }}
       release-tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || 'dev' }}
