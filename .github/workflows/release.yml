@@ -39,9 +39,9 @@ jobs:
   params:
     name: Determine configuration
     outputs:
-      move-tags: ${{ github.event_name == 'workflow_dispatch' && inputs.move-tags || 'false' }}
-      publish-github-release: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-github-release || 'false' }}
-      publish-npm: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-npm || 'false' }}
+      move-tags: ${{ github.event_name == 'workflow_dispatch' && inputs.move-tags || 'true' }}
+      publish-github-release: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-github-release || 'true' }}
+      publish-npm: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-npm || 'true' }}
       release-tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || 'latest' }}
       release-channel: stable
     permissions:

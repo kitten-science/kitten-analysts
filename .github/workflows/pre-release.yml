@@ -184,4 +184,3 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           title: Development Build v${{ needs.changelog.outputs.version }}
           with-authors: false
-
