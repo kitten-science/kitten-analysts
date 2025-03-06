@@ -95,24 +95,24 @@ jobs:
     uses: ./.github/workflows/qa.yml
 
   publish-npm:
-      if: success() && needs.params.outputs.publish-npm == 'true'
-      name: 🔹 Publish npm
-      needs:
-        - changelog
-        - params
-        - qa
-      permissions:
-        contents: write
-        id-token: write
-        packages: write
-        pages: write
-        pull-requests: read
-      secrets:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
-      with:
-        npm-dist-tag: ${{ needs.params.outputs.release-tag }}
-        version: ${{ needs.changelog.outputs.version }}
+    if: success() && needs.params.outputs.publish-npm == 'true'
+    name: 🔹 Publish npm
+    needs:
+      - changelog
+      - params
+      - qa
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+      pages: write
+      pull-requests: read
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
+    with:
+      npm-dist-tag: ${{ needs.params.outputs.release-tag }}
+      version: ${{ needs.changelog.outputs.version }}
 
   pre-release:
     if: |
