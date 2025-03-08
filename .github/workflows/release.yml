@@ -95,7 +95,7 @@ jobs:
 
   publish-npm:
     if: success() && needs.params.outputs.publish-npm == 'true'
-    name: 🔹 Publish npm
+    name: 🔹 Publish
     needs:
       - changelog
       - params
