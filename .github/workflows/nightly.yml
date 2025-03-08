@@ -124,7 +124,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
     with:
-      npm-dist-tag: ${{ needs.params.outputs.release-tag }}
+      dist-tag: ${{ needs.params.outputs.release-tag }}
       version: ${{ needs.changelog.outputs.version }}
 
   nightly:
@@ -200,4 +200,3 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           title: Nightly Build v${{ needs.changelog.outputs.version }}
           with-authors: false
-

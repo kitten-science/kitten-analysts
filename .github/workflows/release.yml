@@ -110,7 +110,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
     with:
-      npm-dist-tag: ${{ needs.params.outputs.release-tag }}
+      dist-tag: ${{ needs.params.outputs.release-tag }}
       version: ${{ needs.changelog.outputs.version }}
 
   release:
@@ -173,7 +173,7 @@ jobs:
         uses: oliversalzburg/action-automatic-semantic-releases@67ff1f7a549647789a1395859ebcf84fc5951d01 # v0.5.9
         with:
           body-suffix: |
-            
+
             ${{ needs.publish-npm.outputs.publish-url && format('Published at <{0}>', needs.publish-npm.outputs.publish-url) }}
           changelog-artifact: changelog.json
           draft: true
@@ -184,4 +184,3 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           title: v${{ needs.changelog.outputs.version }}
           with-authors: false
-
