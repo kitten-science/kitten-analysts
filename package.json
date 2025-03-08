@@ -31,7 +31,7 @@
     "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-ed7e6ea",
     "@koa/bodyparser": "5.1.1",
     "@koa/cors": "5.0.0",
-    "@oliversalzburg/js-utils": "0.2.8",
+    "@oliversalzburg/js-utils": "0.2.13",
     "jsdom": "26.0.0",
     "koa": "2.16.0",
     "koa-router": "13.0.1",
