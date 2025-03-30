@@ -374,7 +374,7 @@ __metadata:
     "@types/koa-router": "npm:7.4.8"
     "@types/koa__cors": "npm:5.0.0"
     "@types/node": "npm:22.13.14"
-    "@types/web": "npm:0.0.214"
+    "@types/web": "npm:0.0.215"
     "@types/ws": "npm:8.18.0"
     esbuild: "npm:0.25.1"
     jsdom: "npm:26.0.0"
@@ -825,10 +825,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:0.0.214":
-  version: 0.0.214
-  resolution: "@types/web@npm:0.0.214"
-  checksum: 10c0/b25107d18579adad2035fa3d4ed8e7ff8dff550340e963e4b443657823843f65140ac72adeca8d8311ef9da5e3425efa34c54cb35ae79bd81e96b89fbdf2de0c
+"@types/web@npm:0.0.215":
+  version: 0.0.215
+  resolution: "@types/web@npm:0.0.215"
+  checksum: 10c0/b9c6d6bd4d0643b199f05f18cd5e5df4fad8aa77b42e8ccf10e1bd03aa053a5492b6c273f502ce417faee7a005c45f860facac71ea72e4c1ad9e21d6b135914d
   languageName: node
   linkType: hard
 
