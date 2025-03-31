@@ -5,7 +5,7 @@ default: build
 build: lib output
 
 clean:
-	rm --force --recursive lib node_modules output tsconfig.tsbuildinfo
+	rm --force --recursive lib node_modules output overlay tsconfig.tsbuildinfo
 
 docs:
 	@echo "This project has no documentation."
@@ -34,6 +34,10 @@ lib: node_modules
 output: node_modules
 	yarn vite --config vite.config.userscript.js build
 
+.PHONY: entrypoints
+entrypoints: node_modules
+	node build.js
+
 .PHONY: injectable
 injectable: node_modules
 	yarn vite --config vite.config.inject.js build
@@ -42,3 +46,8 @@ injectable: node_modules
 userscript: node_modules
 	yarn vite --config vite.config.userscript.js build
 	MINIFY=true yarn vite --config vite.config.userscript.js build
+
+overlay: injectable
+	mkdir -p overlay || true
+	cp output/*.inject.js overlay/
+	cp -r node_modules/@kitten-science/kitten-scientists/output/* overlay/

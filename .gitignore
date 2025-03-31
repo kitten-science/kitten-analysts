@@ -12,3 +12,4 @@ output/
 tsconfig.tsbuildinfo
 
 examples/
+overlay/

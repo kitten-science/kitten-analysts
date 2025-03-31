@@ -7,5 +7,5 @@ EXPOSE 9091
 EXPOSE 9093
 
 WORKDIR "/opt"
-COPY [ ".", "packages/kitten-analysts", "/opt" ]
+COPY [ ".", "/opt" ]
 CMD [ "/bin/bash", "-c", "node output/entrypoint-backend.js" ]
