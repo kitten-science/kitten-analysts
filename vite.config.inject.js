@@ -16,7 +16,7 @@ export default defineConfig({
     minify: false,
     outDir: "output",
     rollupOptions: {
-      external: ["jquery"],
+      external: ["dojo", "jquery"],
       output: {
         extend: true,
         format: "umd",
