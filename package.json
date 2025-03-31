@@ -29,7 +29,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-f2ef6ac",
+    "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-612daa9",
     "@koa/bodyparser": "5.1.1",
     "@koa/cors": "5.0.0",
     "@oliversalzburg/js-utils": "0.2.13",

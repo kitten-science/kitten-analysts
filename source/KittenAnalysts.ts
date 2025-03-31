@@ -1,5 +1,5 @@
 import { SavegameLoader } from "@kitten-science/kitten-scientists/tools/SavegameLoader.js";
-import type { Game } from "@kitten-science/kitten-scientists/types/game.js";
+import type { GamePage } from "@kitten-science/kitten-scientists/types/game.js";
 import {
   type I18nEngine,
   type KGNetSavePersisted,
@@ -145,7 +145,7 @@ export class KittenAnalysts {
   /**
    * A reference to the Kittens Game.
    */
-  readonly game: Game;
+  readonly game: GamePage;
 
   /**
    * The websocket we're using to talk to the backend.
@@ -166,7 +166,7 @@ export class KittenAnalysts {
   #timeoutReconnect = -1;
   #withAnalyticsBackend = false;
 
-  constructor(game: Game, i18nEngine: I18nEngine) {
+  constructor(game: GamePage, i18nEngine: I18nEngine) {
     cwarn("Kitten Analysts constructed.");
 
     this.game = game;
@@ -293,9 +293,9 @@ export class KittenAnalysts {
             group: religionGroups[index],
             label: building.label,
             name: building.name,
-            on: 0,
+            on: building.on ?? 0,
             tab: "Religion",
-            value: building.val,
+            value: building.val ?? 0,
           })),
         );
 
@@ -322,9 +322,9 @@ export class KittenAnalysts {
                 group: spaceGroups[index],
                 label: building.label,
                 name: building.name,
-                on: building.on,
+                on: building.on ?? 0,
                 tab: "Space",
-                value: building.val,
+                value: building.val ?? 0,
               })),
         );
 
@@ -334,9 +334,9 @@ export class KittenAnalysts {
             group: timeGroups[index],
             label: item.label,
             name: item.name,
-            on: "on" in item ? (item.on ?? 0) : 0,
+            on: item.on ?? 0,
             tab: "Time",
-            value: item.val,
+            value: item.val ?? 0,
           })),
         );
 
@@ -444,14 +444,14 @@ export class KittenAnalysts {
             rate =
               this.game.getResourcePerDay(resource.name) *
               (resource.name === "necrocorn" ? 1 + this.game.timeAccelerationRatio() : 1);
-          } else if (resource.calculatePerYear) {
+          } else if (resource.calculateOnYear) {
             rate = this.game.getResourceOnYearProduction(resource.name);
           }
 
           return {
             name: resource.name,
-            value: resource.value,
-            maxValue: resource.maxValue,
+            value: resource.value ?? 0,
+            maxValue: resource.maxValue ?? 0,
             label: resource.title,
             craftable: resource.craftable ?? false,
             rate: rate,
