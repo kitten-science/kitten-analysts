@@ -3,7 +3,16 @@
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["**/.yarn/", "devcontainer/overlay/", "docs/", "lib/", "output/", "package.json"]
+    "ignore": [
+      ".git/",
+      ".yarn/",
+      "examples/",
+      "lib/",
+      "node_modules/",
+      "output/",
+      "overlay/",
+      "package.json"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -24,17 +33,7 @@
       "correctness": {
         "noUnusedImports": "error"
       }
-    },
-    "ignore": [
-      "_site/",
-      ".git/",
-      ".github/",
-      ".yarn/",
-      "docs/",
-      "lib/",
-      "node_modules/",
-      "*.config.*"
-    ]
+    }
   },
   "javascript": {
     "formatter": {

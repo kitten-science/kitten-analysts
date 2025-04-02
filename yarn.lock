@@ -365,7 +365,7 @@ __metadata:
   resolution: "@kitten-science/kitten-analysts@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-612daa9"
+    "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-20250402-4e11d20"
     "@koa/bodyparser": "npm:5.1.1"
     "@koa/cors": "npm:5.0.0"
     "@oliversalzburg/js-utils": "npm:0.2.13"
@@ -391,15 +391,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kitten-science/kitten-scientists@npm:2.0.0-beta.10-dev-612daa9":
-  version: 2.0.0-beta.10-dev-612daa9
-  resolution: "@kitten-science/kitten-scientists@npm:2.0.0-beta.10-dev-612daa9"
+"@kitten-science/kitten-scientists@npm:2.0.0-beta.10-20250402-4e11d20":
+  version: 2.0.0-beta.10-20250402-4e11d20
+  resolution: "@kitten-science/kitten-scientists@npm:2.0.0-beta.10-20250402-4e11d20"
   dependencies:
     "@oliversalzburg/js-utils": "npm:0.2.13"
     date-fns: "npm:4.1.0"
     semver: "npm:7.7.1"
     tslib: "npm:2.8.1"
-  checksum: 10c0/f8c05c8fc9ca5a9237905df52a71f7626926c03f78e05455d83cc8a10e484e9a412c39f62c4690b68f3589547b8d3b1298c11d4de33c1affbb63c25ede4747b3
+  checksum: 10c0/03b02b18ebd138c943a13ac5cad18911467fd09ed555fd6de02dc06b8ca36e42be4b5697d05393cb94ba8ff3c8fa81064e53abb729bc3ed452f21f52a735775f
   languageName: node
   linkType: hard
 

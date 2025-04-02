@@ -19,6 +19,10 @@ services:
         source: ./examples
         target: /local_storage
         read_only: false
+      - type: bind
+        source: ./output
+        target: /opt/output
+        read_only: true
 
   # Actual Kittens Game instance
   game:
