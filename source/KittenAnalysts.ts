@@ -16,7 +16,6 @@ declare global {
   interface Window {
     kittenAnalysts?: KittenAnalysts;
   }
-  const KA_CONNECT_BACKEND: boolean | undefined;
 }
 
 export type KittenAnalystsMessageId =
@@ -177,9 +176,7 @@ export class KittenAnalysts {
    * Start the user script after loading and configuring it.
    */
   run() {
-    const withAnalyticsBackend = Boolean(KA_CONNECT_BACKEND);
-
-    this.connect(withAnalyticsBackend);
+    this.connect(true);
   }
 
   /**
@@ -215,9 +212,11 @@ export class KittenAnalysts {
     // KG would always return this exact URL itself, if it was running on localhost.
     // Because we might not be accessing the current instance of the game through localhost,
     // we need to override the entire method to _always_ return this URL.
-    this.game.server.getServerUrl = () => `http://${location.hostname}:7780`;
+    //
+    // Temporarily disabled to further integration with the official game website.
+    //this.game.server.getServerUrl = () => `http://${location.hostname}:7780`;
 
-    const wsTarget = `ws://${location.hostname}:9093/`;
+    const wsTarget = "ws://localhost:9093/";
     cinfo(`Connecting ${wsTarget}...`);
     this.ws = new WebSocket(wsTarget);
 
