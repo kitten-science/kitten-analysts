@@ -1,1 +1,1 @@
-export const LOCAL_STORAGE_PATH = "/local_storage";
+export const LOCAL_STORAGE_PATH = "/tmp/local_storage";

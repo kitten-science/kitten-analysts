@@ -5,7 +5,7 @@ default: build
 build: lib output
 
 clean:
-	rm --force --recursive lib node_modules output overlay tsconfig.tsbuildinfo
+	rm --force --recursive devcontainer/overlay lib node_modules output overlay tsconfig.tsbuildinfo
 
 docs:
 	@echo "This project has no documentation."
@@ -25,6 +25,18 @@ test:
 	@echo "Kitten Analysts test in production."
 
 
+.PHONY: devcontainer devcontainer-oci
+devcontainer: output injectable entrypoints
+devcontainer-oci: devcontainer
+	docker build \
+		--build-arg BRANCH="master" \
+		--build-arg REPO="https://github.com/nuclear-unicorn/kittensgame.git" \
+		--file devcontainer/Containerfile \
+		--no-cache \
+		--tag localhost/kadevcontainer:latest \
+		.
+
+
 node_modules:
 	yarn install
 
@@ -41,13 +53,10 @@ entrypoints: node_modules
 .PHONY: injectable
 injectable: node_modules
 	yarn vite --config vite.config.inject.js build
+	mkdir -p devcontainer/overlay/ && cp output/kitten-analysts.inject.js devcontainer/overlay/kitten-analysts.inject.js
+	cp -r node_modules/@kitten-science/kitten-scientists/output/* devcontainer/overlay/
 
 .PHONY: userscript
 userscript: node_modules
 	yarn vite --config vite.config.userscript.js build
 	MINIFY=true yarn vite --config vite.config.userscript.js build
-
-overlay: injectable
-	mkdir -p overlay || true
-	cp output/*.inject.js overlay/
-	cp -r node_modules/@kitten-science/kitten-scientists/output/* overlay/
