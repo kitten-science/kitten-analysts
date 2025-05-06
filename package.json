@@ -40,7 +40,7 @@
     "@types/node": "22.15.3",
     "@types/web": "0.0.231",
     "@types/ws": "8.18.1",
-    "esbuild": "0.25.3",
+    "esbuild": "0.25.4",
     "jsdom": "26.1.0",
     "koa": "2.16.1",
     "koa-router": "13.0.1",
