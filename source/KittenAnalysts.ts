@@ -9,7 +9,7 @@ import {
 } from "@kitten-science/kitten-scientists/types/index.js";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
 import { redirectErrorsToConsole } from "@oliversalzburg/js-utils/errors/console.js";
-import { cdebug, cinfo, cwarn } from "./tools/Log.js";
+import { cl } from "./tools/Log.js";
 import { identifyExchange } from "./tools/MessageFormat.js";
 
 declare global {
@@ -167,7 +167,7 @@ export class KittenAnalysts {
   #withAnalyticsBackend = false;
 
   constructor(game: GamePage, i18nEngine: I18nEngine) {
-    cwarn("Kitten Analysts constructed.");
+    console.warn(...cl("Kitten Analysts constructed."));
 
     this.game = game;
     this.i18nEngine = i18nEngine;
@@ -218,26 +218,26 @@ export class KittenAnalysts {
     //this.game.server.getServerUrl = () => `http://${location.hostname}:7780`;
 
     const wsTarget = "ws://localhost:9093/";
-    cinfo(`Connecting ${wsTarget} (try ${this.#connectTry})...`);
+    console.info(...cl(`Connecting ${wsTarget} (try ${this.#connectTry})...`));
     this.ws = new WebSocket(wsTarget);
     ++this.#connectTry;
 
     this.ws.onerror = error => {
-      cwarn("Error on WS connection! Closing and reconnecting...", error.type);
+      console.warn(...cl("Error on WS connection! Closing and reconnecting...", error.type));
       // This should also trigger the `onclose` handler below and, thus, the reconnect.
       this.ws?.close();
       this.ws = null;
     };
 
     this.ws.onclose = () => {
-      cwarn("WS connection closed! Reconnecting...");
+      console.warn(...cl("WS connection closed! Reconnecting..."));
       this.ws?.close();
       this.ws = null;
       this.reconnect();
     };
 
     this.ws.onopen = () => {
-      cinfo("WS connection established.");
+      console.info(...cl("WS connection established."));
       this.#connectTry = 0;
       this.postMessage({
         type: "connected",
@@ -262,7 +262,7 @@ export class KittenAnalysts {
   processMessage(
     message: KittenAnalystsMessage<KittenAnalystsMessageId>,
   ): KittenAnalystsMessage<KittenAnalystsMessageId> | undefined {
-    cdebug(`=> ${identifyExchange(message)} received.`);
+    console.debug(...cl(`=> ${identifyExchange(message)} received.`));
 
     switch (message.type) {
       case "connected":
@@ -536,7 +536,7 @@ export class KittenAnalysts {
         };
       }
       case "injectSavegame": {
-        cwarn("=> Injecting savegame...");
+        console.warn(...cl("=> Injecting savegame..."));
         const data = message.data as KGNetSavePersisted;
         new SavegameLoader(this.game).load(data.saveData).catch(redirectErrorsToConsole(console));
         break;
@@ -569,7 +569,7 @@ export class KittenAnalysts {
   };
 
   heartbeat() {
-    cdebug("Heartbeat");
+    console.debug(...cl("Heartbeat"));
     window.clearTimeout(this.#timeoutReconnect);
     this.#timeoutReconnect = window.setTimeout(() => this.ws?.close(), 30000);
   }
@@ -579,7 +579,7 @@ export class KittenAnalysts {
       return;
     }
 
-    cinfo("Reconnecting...");
+    console.info(...cl("Reconnecting..."));
 
     this.#timeoutReconnect = window.setTimeout(() => {
       this.connect(this.#withAnalyticsBackend);
@@ -594,12 +594,12 @@ export class KittenAnalysts {
     try {
       this.ws.send(JSON.stringify(message));
       if ("responseId" in message) {
-        cdebug(`<= ${identifyExchange(message)} fulfilled.`);
+        console.debug(...cl(`<= ${identifyExchange(message)} fulfilled.`));
       } else {
-        cdebug(`<= ${identifyExchange(message)} dispatched.`);
+        console.debug(...cl(`<= ${identifyExchange(message)} dispatched.`));
       }
     } catch (error) {
-      cwarn("Error while sending message. Closing socket.", error);
+      console.warn(...cl("Error while sending message. Closing socket.", error));
       this.ws.onclose?.(new CloseEvent("close"));
     }
   }

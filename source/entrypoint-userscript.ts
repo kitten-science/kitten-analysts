@@ -1,6 +1,6 @@
 import { UserScriptLoader } from "@kitten-science/kitten-scientists/UserScriptLoader.js";
+import { redirectErrorsToConsole } from "@oliversalzburg/js-utils/errors/console.js";
 import { KittenAnalysts } from "./KittenAnalysts.js";
-import { cerror } from "./tools/Log.js";
 
 (async () => {
   const userScript = await new UserScriptLoader().waitForGame(KittenAnalysts, "ka");
@@ -8,4 +8,4 @@ import { cerror } from "./tools/Log.js";
   window.kittenAnalysts = userScript;
 
   userScript.run();
-})().catch(cerror);
+})().catch(redirectErrorsToConsole(console));
