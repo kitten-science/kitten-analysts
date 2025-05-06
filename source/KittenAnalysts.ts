@@ -163,6 +163,7 @@ export class KittenAnalysts {
 
   #interval = -1;
   #timeoutReconnect = -1;
+  #connectTry = 0;
   #withAnalyticsBackend = false;
 
   constructor(game: GamePage, i18nEngine: I18nEngine) {
@@ -217,8 +218,9 @@ export class KittenAnalysts {
     //this.game.server.getServerUrl = () => `http://${location.hostname}:7780`;
 
     const wsTarget = "ws://localhost:9093/";
-    cinfo(`Connecting ${wsTarget}...`);
+    cinfo(`Connecting ${wsTarget} (try ${this.#connectTry})...`);
     this.ws = new WebSocket(wsTarget);
+    ++this.#connectTry;
 
     this.ws.onerror = error => {
       cwarn("Error on WS connection! Closing and reconnecting...", error.type);
@@ -236,6 +238,7 @@ export class KittenAnalysts {
 
     this.ws.onopen = () => {
       cinfo("WS connection established.");
+      this.#connectTry = 0;
       this.postMessage({
         type: "connected",
         client_type: this.location.includes("headless.html") ? "headless" : "browser",

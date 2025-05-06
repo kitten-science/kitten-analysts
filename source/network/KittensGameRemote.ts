@@ -104,6 +104,11 @@ export class KittensGameRemote {
 
     if (!message.responseId) {
       switch (message.type) {
+        case "connected": {
+          process.stderr.write(`=> ${message.client_type}:${message.location} connected.\n`);
+          return;
+        }
+
         case "reportFrame": {
           const payload = message.data as FrameContext;
           const delta = payload.exit - payload.entry;
