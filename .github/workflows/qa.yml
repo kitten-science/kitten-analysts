@@ -66,3 +66,14 @@ jobs:
   qa:
     name: 🔹 QA
     uses: oliversalzburg/workflows/.github/workflows/qa-browser-app.yml@main
+
+  qa-devcontainer:
+    name: 🔹 Devcontainer
+    uses: oliversalzburg/workflows/.github/workflows/qa-nodejs-oci.yml@main
+    with:
+      artifact-name: devcontainer-output
+      artifact-contents: |
+        devcontainer/overlay
+        node_modules
+        output
+      containerfile: devcontainer/Containerfile
