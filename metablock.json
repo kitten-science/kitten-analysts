@@ -8,6 +8,9 @@
     "https://kittensgame.com/web/",
     "https://kittensgame.com/beta/",
     "https://kittensgame.com/alpha/",
-    "http://127.0.0.1:8100/"
+    "http://127.0.0.*/*",
+    "http://localhost/*",
+    "http*://*.localhost/*",
+    "http*://*.labnet/*"
   ]
 }
