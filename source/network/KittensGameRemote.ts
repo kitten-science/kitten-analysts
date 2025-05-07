@@ -170,7 +170,7 @@ export class KittensGameRemote {
               `${LOCAL_STORAGE_PATH}/${payload.telemetry.guid}.json`,
               JSON.stringify(savegame),
             );
-            process.stderr.write("=> Savegame persisted to disc.\n");
+            // process.stderr.write("=> Savegame persisted to disc.\n");
           } catch (error) {
             console.error("!> Error while persisting savegame to disc!", error);
           }

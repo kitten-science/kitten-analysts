@@ -286,7 +286,7 @@ routerNetwork.post("/kgnet/save/update", context => {
     existingSave.label = gameSave.metadata?.label ?? existingSave.label;
     writeFileSync(`${LOCAL_STORAGE_PATH}/${gameGUID}.json`, JSON.stringify(existingSave));
     saveStore.set(gameGUID, existingSave);
-    process.stderr.write("=> Savegame persisted to disc.\n");
+    // process.stderr.write("=> Savegame persisted to disc.\n");
 
     context.body = [...saveStore.values()];
     context.status = 200;
