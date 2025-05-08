@@ -121,9 +121,9 @@ jobs:
       containerfile: devcontainer/Containerfile
       dist-tag: ${{ needs.params.outputs.release-tag }}
       image-description: Kitten Science Development Container
-      image-name: kitten-science/devcontainer
+      image-name: kitten-science/kadevcontainer
       image-tag: v${{ needs.changelog.outputs.version }}
-      image-title: devcontainer
+      image-title: kadevcontainer
       push: ${{ needs.params.outputs.move-tags == 'true' }}
       with-sarif: false
       with-sbom: false
