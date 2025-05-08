@@ -5,11 +5,8 @@ LABEL "org.opencontainers.image.description"="Kittens Game with Kitten Science D
 ARG REPO=https://github.com/nuclear-unicorn/kittensgame.git
 ARG BRANCH=master
 
-# The devcontainer for Kitten Scientists uses these default ports:
-# EXPOSE 8080
-# EXPOSE 8086
-EXPOSE 8180
-EXPOSE 8186
+EXPOSE 8080
+EXPOSE 8086
 
 RUN git clone --branch "$BRANCH" --single-branch "$REPO" \
   && cd kittensgame \
@@ -23,4 +20,4 @@ RUN [ "node", "./mod/rewrite-index.mjs" ]
 RUN [ "node", "./mod/inject-scripts.mjs", "overlay/kitten-scientists.inject.js", "overlay/kitten-analysts.inject.js" ]
 
 # Start the development server that serves the Kittens Game.
-CMD [ "/bin/bash", "-c", "yarn run watch-http-server -p 8180" ]
+CMD [ "/bin/bash", "-c", "yarn run watch-http-server -p 8080" ]
