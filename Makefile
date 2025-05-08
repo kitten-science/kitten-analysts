@@ -24,6 +24,9 @@ lint: node_modules
 test:
 	@echo "Kitten Analysts test in production."
 
+run: output
+	@node output/entrypoint-backend.js
+
 
 .PHONY: devcontainer devcontainer-oci
 devcontainer: output injectable entrypoints
