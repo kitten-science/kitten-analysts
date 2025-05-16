@@ -13,16 +13,14 @@ StartLimitBurst=3
 TimeoutStartSec=300
 TimeoutStopSec=70
 ExecStartPre=/bin/rm --force %t/%n.pid %t/%n.ctr-id
-ExecStartPre=-/usr/bin/podman pull ghcr.io/kitten-science/kitten-analysts:nightly
+ExecStartPre=-/usr/bin/podman pull ghcr.io/kitten-science/kitten-analysts:v0.0.13
 ExecStart=/usr/bin/podman run \
   --cgroups "no-conmon" \
   --cidfile "%t/%n.ctr-id" \
   --conmon-pidfile "%t/%n.pid" \
   --detach \
-  --hostname "%n.workstation.labnet" \
   --label "traefik.enable=false" \
   --memory "128m" \
-  --name "%n.workstation.labnet" \
   --publish "7780:7780" \
   --publish "9091:9091" \
   --publish "9093:9093" \
@@ -31,7 +29,7 @@ ExecStart=/usr/bin/podman run \
   --rm \
   # --user "kittens:kittens" \
   --volume "/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro" \
-  kitten-science/kitten-analysts:nightly
+  kitten-science/kitten-analysts:v0.0.13
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile "%t/%n.ctr-id" --time 10
 ExecStopPost=/usr/bin/podman rm --ignore --force --cidfile "%t/%n.ctr-id"
