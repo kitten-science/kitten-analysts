@@ -10,7 +10,9 @@
     "https://kittensgame.com/alpha/",
     "http://127.0.0.*/*",
     "http://localhost/*",
-    "http*://*.localhost/*",
-    "http*://*.labnet/*"
+    "https://*.localhost/*",
+    "https://*.labnet/*",
+    "http://*.localhost/*",
+    "http://*.labnet/*"
   ]
 }
