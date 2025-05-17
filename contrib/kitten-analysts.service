@@ -28,7 +28,6 @@ ExecStart=/usr/bin/podman run \
   --replace \
   --rm \
   # --user "kittens:kittens" \
-  --volume "/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro" \
   kitten-science/kitten-analysts:v0.0.13
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile "%t/%n.ctr-id" --time 10
