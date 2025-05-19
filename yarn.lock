@@ -365,7 +365,7 @@ __metadata:
   resolution: "@kitten-science/kitten-analysts@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@kitten-science/kitten-scientists": "npm:2.0.0-beta.11-dev.20250517"
+    "@kitten-science/kitten-scientists": "npm:2.0.0-beta.11-nightly.20250519"
     "@koa/bodyparser": "npm:5.1.1"
     "@koa/cors": "npm:5.0.0"
     "@oliversalzburg/js-utils": "npm:0.3.0"
@@ -391,15 +391,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kitten-science/kitten-scientists@npm:2.0.0-beta.11-dev.20250517":
-  version: 2.0.0-beta.11-dev.20250517
-  resolution: "@kitten-science/kitten-scientists@npm:2.0.0-beta.11-dev.20250517"
-  dependencies:
-    "@oliversalzburg/js-utils": "npm:0.3.0"
-    date-fns: "npm:4.1.0"
-    semver: "npm:7.7.2"
-    tslib: "npm:2.8.1"
-  checksum: 10c0/250ca23e0a028f253da637225b6ec1be57f86e4308b4fa5ead2eb4141ba0a9c8000f192365456948741cc92ac1c23a81e3864dafc6d85a82b1596d800b6335d6
+"@kitten-science/kitten-scientists@npm:2.0.0-beta.11-nightly.20250519":
+  version: 2.0.0-beta.11-nightly.20250519
+  resolution: "@kitten-science/kitten-scientists@npm:2.0.0-beta.11-nightly.20250519"
+  checksum: 10c0/ffed76f06a90cc08667ddd74b40012b03edc005ad96172c4da9a45d93243fdef7bdc460ac08e6d9dde02d65991be47e52665cdf86e26821c03d76a5a0ef0adda
   languageName: node
   linkType: hard
 
@@ -1072,13 +1067,6 @@ __metadata:
     whatwg-mimetype: "npm:^4.0.0"
     whatwg-url: "npm:^14.0.0"
   checksum: 10c0/1b894d7d41c861f3a4ed2ae9b1c3f0909d4575ada02e36d3d3bc584bdd84278e20709070c79c3b3bff7ac98598cb191eb3e86a89a79ea4ee1ef360e1694f92ad
-  languageName: node
-  linkType: hard
-
-"date-fns@npm:4.1.0":
-  version: 4.1.0
-  resolution: "date-fns@npm:4.1.0"
-  checksum: 10c0/b79ff32830e6b7faa009590af6ae0fb8c3fd9ffad46d930548fbb5acf473773b4712ae887e156ba91a7b3dc30591ce0f517d69fd83bd9c38650fdc03b4e0bac8
   languageName: node
   linkType: hard
 
@@ -2334,7 +2322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.2, semver@npm:^7.3.5":
+"semver@npm:^7.3.5":
   version: 7.7.2
   resolution: "semver@npm:7.7.2"
   bin:
