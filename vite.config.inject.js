@@ -1,7 +1,9 @@
 import { defineConfig } from "vite";
 import manifest from "./package.json" with { type: "json" };
 
-const filename = "kitten-analysts.inject.js";
+const MINIFY = Boolean(process.env.MINIFY);
+
+const filename = ["kitten-analysts", MINIFY ? ".min" : "", ".inject.js"].join("");
 
 const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
 const RELEASE_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.version}-live`);
@@ -13,7 +15,7 @@ export default defineConfig({
       entry: "source/entrypoint-userscript.ts",
       name: "kitten-analysts",
     },
-    minify: false,
+    minify: MINIFY ? "esbuild" : false,
     outDir: "output",
     rollupOptions: {
       external: ["dojo", "jquery"],
