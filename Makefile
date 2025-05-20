@@ -2,7 +2,7 @@
 
 default: build
 
-build: injectable userscript entrypoints
+build: injectable userscript lib entrypoints
 
 clean:
 	rm --force --recursive devcontainer/overlay lib node_modules output overlay tsconfig.tsbuildinfo
