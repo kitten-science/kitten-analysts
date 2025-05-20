@@ -58,6 +58,7 @@ injectable: node_modules
 	npm exec -- vite --config vite.config.inject.js build
 	mkdir -p devcontainer/overlay/ && cp output/kitten-analysts.inject.js devcontainer/overlay/kitten-analysts.inject.js
 	cp -r node_modules/@kitten-science/kitten-scientists/output/* devcontainer/overlay/
+	rm devcontainer/overlay/*.min.inject.js devcontainer/overlay/*.user.js
 
 .PHONY: userscript
 userscript: node_modules
