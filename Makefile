@@ -28,18 +28,6 @@ run: output
 	@node output/entrypoint-backend.js
 
 
-.PHONY: devcontainer devcontainer-oci
-devcontainer: output injectable entrypoints
-devcontainer-oci: devcontainer
-	docker build \
-		--build-arg BRANCH="master" \
-		--build-arg REPO="https://github.com/nuclear-unicorn/kittensgame.git" \
-		--file devcontainer/Containerfile \
-		--no-cache \
-		--tag localhost/kadevcontainer:latest \
-		.
-
-
 node_modules:
 	npm install
 
