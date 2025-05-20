@@ -1,18 +1,15 @@
 {
   "name": "Kitten Analysts",
   "namespace": "https://kitten-science.com/",
-  "description": "Add-on for the wonderful incremental browser game: https://kittensgame.com/web/",
-  "icon": "https://kitten-science.com/assets/images/organization-logo64.png",
-  "author": "Oliver Salzburg <oliver.salzburg@gmail.com>",
+  "icon64URL": "https://kitten-science.com/assets/images/organization-logo64.png",
   "match": [
     "https://kittensgame.com/web/",
     "https://kittensgame.com/beta/",
     "https://kittensgame.com/alpha/",
-    "http://127.0.0.*/*",
-    "http://localhost/*",
-    "https://*.localhost/*",
-    "https://*.labnet/*",
-    "http://*.localhost/*",
-    "http://*.labnet/*"
+    "https://*.localhost/",
+    "https://*.labnet/",
+    "http://*.localhost/",
+    "http://*.labnet/",
+    "http://localhost/"
   ]
 }

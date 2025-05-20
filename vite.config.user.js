@@ -15,11 +15,13 @@ const RELEASE_VERSION = JSON.stringify(versionString);
 export default defineConfig({
   plugins: [
     metablock({
+      manager: "all",
       override: {
-        version: versionString,
+        author: manifest.author,
         description: manifest.description,
-        homepage: manifest.homepage,
+        homepageURL: manifest.homepage,
         supportURL: manifest.bugs.url,
+        version: versionString,
       },
     }),
   ],
@@ -39,6 +41,7 @@ export default defineConfig({
         entryFileNames: filename,
       },
     },
+    sourcemap: "hidden",
   },
   define: {
     RELEASE_CHANNEL,

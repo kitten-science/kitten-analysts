@@ -23,7 +23,7 @@ export default defineConfig({
         entryFileNames: filename,
       },
     },
-    sourcemap: "inline",
+    sourcemap: "hidden",
   },
   define: {
     RELEASE_CHANNEL,
