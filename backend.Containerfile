@@ -1,4 +1,4 @@
-FROM docker.io/library/node:22.16.0-bookworm@sha256:74066d050011dd18c56390523cb255b38bce09b332221a4ec15ab0d8e1ac61fe
+FROM docker.io/library/node:22.16.0-bookworm@sha256:0b5b940c21ab03353de9042f9166c75bcfc53c4cd0508c7fd88576646adbf875
 
 LABEL "org.opencontainers.image.description"="Kitten Analysts Backend"
 
