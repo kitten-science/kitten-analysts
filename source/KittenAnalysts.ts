@@ -240,10 +240,10 @@ export class KittenAnalysts {
       console.info(...cl("WS connection established."));
       this.#connectTry = 0;
       this.postMessage({
-        type: "connected",
         client_type: this.location.includes("headless.html") ? "headless" : "browser",
-        location: this.location,
         guid: game.telemetry.guid,
+        location: this.location,
+        type: "connected",
       });
     };
 
@@ -451,12 +451,12 @@ export class KittenAnalysts {
           }
 
           return {
-            name: resource.name,
-            value: resource.value ?? 0,
-            maxValue: resource.maxValue ?? 0,
-            label: resource.title,
             craftable: resource.craftable ?? false,
+            label: resource.title,
+            maxValue: resource.maxValue ?? 0,
+            name: resource.name,
             rate: rate,
+            value: resource.value ?? 0,
           };
         });
 
@@ -499,8 +499,8 @@ export class KittenAnalysts {
       case "getStatistics": {
         const data: PayloadStatistics = game.stats.statGroups.flatMap((group, index) =>
           group.group.map(member => ({
-            name: member.name,
             label: member.title,
+            name: member.name,
             type: index === 0 ? "all_time" : "current",
             value: member.val,
           })),
@@ -519,11 +519,11 @@ export class KittenAnalysts {
         const data: PayloadTechnologies = game.science.techs
           .filter(tech => !TechnologiesIgnored.includes(tech.name as TechnologyIgnored))
           .map(tech => ({
-            name: tech.name,
             label: tech.label,
+            name: tech.name,
             researched: tech.researched,
-            unlocked: tech.unlocked,
             tab: "Science",
+            unlocked: tech.unlocked,
           }));
 
         return {

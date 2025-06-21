@@ -1,49 +1,130 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "assist": {
+    "actions": {
+      "recommended": true,
+      "source": {
+        "organizeImports": "on",
+        "recommended": true,
+        "useSortedKeys": "on"
+      }
+    },
+    "enabled": true
+  },
+  "css": {
+    "assist": {
+      "enabled": true
+    },
+    "formatter": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": true
+    },
+    "parser": {
+      "cssModules": true
+    }
+  },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [".git/", "examples/", "lib/", "node_modules/", "output/", "overlay/", "package.json"]
+    "includes": ["@types/**", "data/**", "!lib/**", "source/**", "*.*", "!package.json"]
   },
   "formatter": {
+    "attributePosition": "auto",
+    "bracketSpacing": true,
     "enabled": true,
-    "useEditorconfig": true,
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 100,
-    "attributePosition": "auto",
-    "bracketSpacing": true
+    "useEditorconfig": true
   },
-  "organizeImports": { "enabled": true },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedImports": "error"
-      }
+  "html": {
+    "formatter": {
+      "enabled": true
     }
   },
   "javascript": {
+    "assist": {
+      "enabled": true
+    },
     "formatter": {
+      "arrowParentheses": "asNeeded",
+      "attributePosition": "auto",
+      "bracketSameLine": false,
+      "bracketSpacing": true,
+      "enabled": true,
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
-      "trailingCommas": "all",
-      "semicolons": "always",
-      "arrowParentheses": "asNeeded",
-      "bracketSameLine": false,
       "quoteStyle": "double",
-      "attributePosition": "auto",
-      "bracketSpacing": true
+      "semicolons": "always",
+      "trailingCommas": "all"
     },
-    "globals": ["exports"]
-  },
-  "css": {
-    "parser": {
-      "cssModules": true
+
+    "globals": ["exports"],
+    "linter": {
+      "enabled": true
     }
   },
-  "overrides": [{ "include": ["*.md"], "formatter": { "indentWidth": 4 } }]
+  "json": {
+    "assist": {
+      "enabled": true
+    },
+    "formatter": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": true
+    },
+    "parser": {
+      "allowComments": false,
+      "allowTrailingCommas": false
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "includes": ["package.json"],
+    "rules": {
+      "complexity": {
+        "noArguments": "error",
+        "noCommaOperator": "error",
+        "useNumericLiterals": "error"
+      },
+      "correctness": {
+        "noUndeclaredDependencies": "error",
+        "noUnknownPseudoClass": "off",
+        "noUnusedImports": "error",
+        "useImportExtensions": "error"
+      },
+      "nursery": {
+        "noFloatingPromises": "error"
+      },
+      "recommended": true,
+      "style": {
+        "noInferrableTypes": "error",
+        "noNonNullAssertion": "error",
+        "noParameterAssign": "error",
+        "noUnusedTemplateLiteral": "error",
+        "noUselessElse": "error",
+        "useArrayLiterals": "off",
+        "useAsConstAssertion": "error",
+        "useConst": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useExponentiationOperator": "error",
+        "useExportType": "error",
+        "useImportType": "error",
+        "useLiteralEnumMembers": "error",
+        "useNodejsImportProtocol": "error",
+        "useNumberNamespace": "error",
+        "useSelfClosingElements": "error",
+        "useShorthandFunctionType": "error",
+        "useSingleVarDeclarator": "error",
+        "useTemplate": "error"
+      }
+    }
+  },
+  "overrides": [{ "formatter": { "indentWidth": 4 }, "includes": ["**/*.md"] }],
+  "vcs": { "clientKind": "git", "enabled": true, "useIgnoreFile": true }
 }

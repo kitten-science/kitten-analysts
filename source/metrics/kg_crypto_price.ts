@@ -5,11 +5,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_crypto_price = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "The current price of blackcoin.",
-    name: "kg_crypto_price",
-    labelNames: ["client_type", "guid", "location"] as const,
-    require: "getCalendar",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -20,4 +15,9 @@ export const kg_crypto_price = (cache: MessageCache, remote: KittensGameRemote) 
         element.cryptoPrice,
       );
     },
+    help: "The current price of blackcoin.",
+    labelNames: ["client_type", "guid", "location"] as const,
+    name: "kg_crypto_price",
+    remote,
+    require: "getCalendar",
   });

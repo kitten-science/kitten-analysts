@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_race_standing = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "Your current standing with the given race.",
-    name: "kg_race_standing",
-    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
-    require: "getRaces",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -23,4 +18,9 @@ export const kg_race_standing = (cache: MessageCache, remote: KittensGameRemote)
         element.standing,
       );
     },
+    help: "Your current standing with the given race.",
+    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
+    name: "kg_race_standing",
+    remote,
+    require: "getRaces",
   });

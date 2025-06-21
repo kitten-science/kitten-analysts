@@ -8,10 +8,10 @@ import { sleep } from "@oliversalzburg/js-utils/async/async.js";
 import type { AnyFunction } from "@oliversalzburg/js-utils/core.js";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
 import { compressToUTF16 } from "lz-string";
-import { Histogram, exponentialBuckets, linearBuckets } from "prom-client";
+import { exponentialBuckets, Histogram, linearBuckets } from "prom-client";
 import { type AddressInfo, type RawData, WebSocket, WebSocketServer } from "ws";
-import type { KittenAnalystsMessage, KittenAnalystsMessageId } from "../KittenAnalysts.js";
 import { LOCAL_STORAGE_PATH } from "../globals.js";
+import type { KittenAnalystsMessage, KittenAnalystsMessageId } from "../KittenAnalysts.js";
 import { identifyExchange } from "../tools/MessageFormat.js";
 
 interface RemoteConnection {
@@ -28,10 +28,10 @@ export class KittensGameRemote {
   wss: WebSocketServer;
 
   ks_iterate_duration = new Histogram({
-    name: "ks_iterate_duration",
-    help: "How long each iteration of KS took.",
     buckets: [...linearBuckets(0, 1, 100), ...exponentialBuckets(100, 1.125, 30)],
+    help: "How long each iteration of KS took.",
     labelNames: ["client_type", "guid", "location", "manager"] as const,
+    name: "ks_iterate_duration",
   });
 
   #lastKnownHeadlessSocket: RemoteConnection | null = null;
@@ -56,7 +56,7 @@ export class KittensGameRemote {
     this.wss.on("connection", ws => {
       ws.on("error", console.error);
 
-      const socket = { ws, isAlive: true };
+      const socket = { isAlive: true, ws };
       this.sockets.add(socket);
       ws.on("pong", () => {
         socket.isAlive = true;
@@ -239,7 +239,7 @@ export class KittensGameRemote {
         return;
       }
 
-      this.pendingRequests.set(requestId, { resolve, reject });
+      this.pendingRequests.set(requestId, { reject, resolve });
       socket.ws.send(JSON.stringify(message), error => {
         if (error) {
           reject(error);

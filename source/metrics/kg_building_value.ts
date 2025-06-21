@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_building_value = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many of the given building have been built.",
-    name: "kg_building_value",
-    labelNames: ["client_type", "group", "guid", "name", "label", "location", "tab"] as const,
-    require: "getBuildings",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -25,4 +20,9 @@ export const kg_building_value = (cache: MessageCache, remote: KittensGameRemote
         element.value,
       );
     },
+    help: "How many of the given building have been built.",
+    labelNames: ["client_type", "group", "guid", "name", "label", "location", "tab"] as const,
+    name: "kg_building_value",
+    remote,
+    require: "getBuildings",
   });

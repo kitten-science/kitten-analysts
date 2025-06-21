@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_pollution_production = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How much pollution buildings currently generate.",
-    name: "kg_pollution_production",
-    labelNames: ["client_type", "guid", "label", "location", "name"] as const,
-    require: "getPollution",
     extract(client_type, guid, location, element, subject) {
       // This is tracked in kg_pollution_total
       if (element.name === "cathPollution") {
@@ -28,4 +23,9 @@ export const kg_pollution_production = (cache: MessageCache, remote: KittensGame
         element.pollution,
       );
     },
+    help: "How much pollution buildings currently generate.",
+    labelNames: ["client_type", "guid", "label", "location", "name"] as const,
+    name: "kg_pollution_production",
+    remote,
+    require: "getPollution",
   });

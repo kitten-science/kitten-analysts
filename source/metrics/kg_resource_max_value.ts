@@ -7,22 +7,22 @@ import { gaugeFactory } from "./factory.js";
 export const kg_resource_max_value = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "The current limit of your storage pool for the given resource.",
-    name: "kg_resource_max_value",
-    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
-    require: "getResourcePool",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
           client_type,
+          craftable: element.craftable.toString(),
           guid,
-          name: element.name,
           label: ucfirst(element.label),
           location,
-          craftable: element.craftable.toString(),
+          name: element.name,
         },
         roundTo(element.maxValue, 2),
       );
     },
+    help: "The current limit of your storage pool for the given resource.",
+    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
+    name: "kg_resource_max_value",
+    remote,
+    require: "getResourcePool",
   });

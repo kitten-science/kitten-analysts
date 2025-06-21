@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_embassy_level = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many embassies have been built for the given race.",
-    name: "kg_embassy_level",
-    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
-    require: "getRaces",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -23,4 +18,9 @@ export const kg_embassy_level = (cache: MessageCache, remote: KittensGameRemote)
         element.embassyLevel,
       );
     },
+    help: "How many embassies have been built for the given race.",
+    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
+    name: "kg_embassy_level",
+    remote,
+    require: "getRaces",
   });

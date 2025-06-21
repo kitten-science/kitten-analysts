@@ -1,5 +1,6 @@
 import { isNil, mustExist } from "@oliversalzburg/js-utils/data/nil.js";
 import { Gauge } from "prom-client";
+import type { MessageCache } from "../entrypoint-backend.js";
 import type {
   PayloadBuildings,
   PayloadCalendar,
@@ -9,7 +10,6 @@ import type {
   PayloadStatistics,
   PayloadTechnologies,
 } from "../KittenAnalysts.js";
-import type { MessageCache } from "../entrypoint-backend.js";
 import type { KittensGameRemote } from "../network/KittensGameRemote.js";
 
 export const gaugeFactory = <
@@ -60,9 +60,6 @@ export const gaugeFactory = <
   ) => void;
 }) =>
   new Gauge({
-    help: instructions.help,
-    name: instructions.name,
-    labelNames: instructions.labelNames,
     async collect() {
       if (!instructions.cache.has(instructions.require)) {
         instructions.cache.set(
@@ -90,4 +87,7 @@ export const gaugeFactory = <
         }
       }
     },
+    help: instructions.help,
+    labelNames: instructions.labelNames,
+    name: instructions.name,
   });

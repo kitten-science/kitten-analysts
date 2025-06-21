@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_resource_rate = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many of the given resource are produced every second.",
-    name: "kg_resource_rate",
-    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
-    require: "getResourcePool",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -24,4 +19,9 @@ export const kg_resource_rate = (cache: MessageCache, remote: KittensGameRemote)
         element.rate,
       );
     },
+    help: "How many of the given resource are produced every second.",
+    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
+    name: "kg_resource_rate",
+    remote,
+    require: "getResourcePool",
   });

@@ -1,6 +1,4 @@
 {
-  "name": "Kitten Analysts",
-  "namespace": "https://kitten-science.com/",
   "icon": "https://kitten-science.com/assets/images/organization-logo64.png",
   "match": [
     "https://kittensgame.com/web/",
@@ -11,5 +9,7 @@
     "http://*.localhost/",
     "http://*.labnet/",
     "http://localhost/"
-  ]
+  ],
+  "name": "Kitten Analysts",
+  "namespace": "https://kitten-science.com/"
 }
