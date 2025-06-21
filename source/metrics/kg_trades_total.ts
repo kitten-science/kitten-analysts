@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_trades_total = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many trades you've completed.",
-    name: "kg_trades_total",
-    labelNames: ["client_type", "guid", "label", "location", "type"] as const,
-    require: "getStatistics",
     extract(client_type, guid, location, element, subject) {
       if (element.name !== "totalTrades") {
         return;
@@ -27,4 +22,9 @@ export const kg_trades_total = (cache: MessageCache, remote: KittensGameRemote) 
         element.value,
       );
     },
+    help: "How many trades you've completed.",
+    labelNames: ["client_type", "guid", "label", "location", "type"] as const,
+    name: "kg_trades_total",
+    remote,
+    require: "getStatistics",
   });

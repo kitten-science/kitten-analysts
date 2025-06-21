@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_tech_researched = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "Has the given technology been researched?",
-    name: "kg_tech_researched",
-    labelNames: ["client_type", "client_type", "guid", "name", "label", "location", "tab"] as const,
-    require: "getTechnologies",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -24,4 +19,9 @@ export const kg_tech_researched = (cache: MessageCache, remote: KittensGameRemot
         element.researched ? 1 : 0,
       );
     },
+    help: "Has the given technology been researched?",
+    labelNames: ["client_type", "client_type", "guid", "name", "label", "location", "tab"] as const,
+    name: "kg_tech_researched",
+    remote,
+    require: "getTechnologies",
   });

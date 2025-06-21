@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type {
   KGNetSaveFromGame,
@@ -15,6 +15,7 @@ import Koa from "koa";
 import Router from "koa-router";
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 import { Registry } from "prom-client";
+import { LOCAL_STORAGE_PATH } from "./globals.js";
 import type {
   KittenAnalystsMessage,
   KittenAnalystsMessageId,
@@ -26,7 +27,6 @@ import type {
   PayloadStatistics,
   PayloadTechnologies,
 } from "./KittenAnalysts.js";
-import { LOCAL_STORAGE_PATH } from "./globals.js";
 import { kg_building_on } from "./metrics/kg_building_on.js";
 import { kg_building_value } from "./metrics/kg_building_value.js";
 import { kg_buildings_constructed } from "./metrics/kg_buildings_constructed.js";
@@ -70,18 +70,18 @@ const PROTOCOL_DEBUG = Boolean(process.env.PROTOCOL_DEBUG);
 
 const saveStore = new Map<string, KGNetSavePersisted>();
 saveStore.set("ka-internal-savestate", {
-  guid: "ka-internal-savestate",
   archived: false,
-  label: "Background Game",
+  guid: "ka-internal-savestate",
   index: {
     calendar: {
       day: 0,
       year: 0,
     },
   },
-  timestamp: 0,
+  label: "Background Game",
   saveData: "",
   size: 0,
+  timestamp: 0,
 });
 
 // Websocket stuff
@@ -255,8 +255,8 @@ routerNetwork.post("/kgnet/save/upload", context => {
     process.stderr.write("=> Injecting savegame into headless session...\n");
     remote
       .toHeadless({
-        type: "injectSavegame",
         data: savegameEphemeral,
+        type: "injectSavegame",
       })
       .catch(redirectErrorsToConsole(console));
 

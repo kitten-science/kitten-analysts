@@ -13,6 +13,28 @@ const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
 const RELEASE_VERSION = JSON.stringify(versionString);
 
 export default defineConfig({
+  build: {
+    emptyOutDir: false,
+    lib: {
+      entry: "source/entrypoint-userscript.ts",
+      name: "kitten-analysts",
+    },
+    minify: minify ? "esbuild" : false,
+    outDir: "output",
+    rollupOptions: {
+      external: ["dojo", "jquery"],
+      output: {
+        entryFileNames: filename,
+        extend: true,
+        format: "umd",
+      },
+    },
+    sourcemap: "hidden",
+  },
+  define: {
+    RELEASE_CHANNEL,
+    RELEASE_VERSION,
+  },
   plugins: [
     metablock({
       manager: "all",
@@ -25,26 +47,4 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    emptyOutDir: false,
-    lib: {
-      entry: "source/entrypoint-userscript.ts",
-      name: "kitten-analysts",
-    },
-    minify: minify ? "esbuild" : false,
-    outDir: "output",
-    rollupOptions: {
-      external: ["dojo", "jquery"],
-      output: {
-        extend: true,
-        format: "umd",
-        entryFileNames: filename,
-      },
-    },
-    sourcemap: "hidden",
-  },
-  define: {
-    RELEASE_CHANNEL,
-    RELEASE_VERSION,
-  },
 });

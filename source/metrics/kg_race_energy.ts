@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_race_energy = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "The current energy of the race. Probably only relevant for Leviathans.",
-    name: "kg_race_energy",
-    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
-    require: "getRaces",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -23,4 +18,9 @@ export const kg_race_energy = (cache: MessageCache, remote: KittensGameRemote) =
         element.energy,
       );
     },
+    help: "The current energy of the race. Probably only relevant for Leviathans.",
+    labelNames: ["client_type", "guid", "name", "label", "location"] as const,
+    name: "kg_race_energy",
+    remote,
+    require: "getRaces",
   });

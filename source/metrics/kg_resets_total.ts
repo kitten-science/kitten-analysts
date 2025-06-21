@@ -6,11 +6,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_resets_total = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many times you've reset your game.",
-    name: "kg_resets_total",
-    labelNames: ["client_type", "guid", "label", "location", "type"] as const,
-    require: "getStatistics",
     extract(client_type, guid, location, element, subject) {
       if (element.name !== "totalResets") {
         return;
@@ -27,4 +22,9 @@ export const kg_resets_total = (cache: MessageCache, remote: KittensGameRemote) 
         element.value,
       );
     },
+    help: "How many times you've reset your game.",
+    labelNames: ["client_type", "guid", "label", "location", "type"] as const,
+    name: "kg_resets_total",
+    remote,
+    require: "getStatistics",
   });

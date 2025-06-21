@@ -7,11 +7,6 @@ import { gaugeFactory } from "./factory.js";
 export const kg_resource_value = (cache: MessageCache, remote: KittensGameRemote) =>
   gaugeFactory({
     cache,
-    remote,
-    help: "How many of the given resource are in your resource pool.",
-    name: "kg_resource_value",
-    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
-    require: "getResourcePool",
     extract(client_type, guid, location, element, subject) {
       subject.set(
         {
@@ -25,4 +20,9 @@ export const kg_resource_value = (cache: MessageCache, remote: KittensGameRemote
         roundTo(element.value, 2),
       );
     },
+    help: "How many of the given resource are in your resource pool.",
+    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
+    name: "kg_resource_value",
+    remote,
+    require: "getResourcePool",
   });
