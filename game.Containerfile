@@ -1,4 +1,4 @@
-FROM docker.io/library/node:22.18.0-bookworm@sha256:3266bc9e8bee1acc8a77386eefaf574987d2729b8c5ec35b0dbd6ddbc40b0ce2
+FROM docker.io/library/node:22.19.0-bookworm@sha256:c7fe4111436bcb0f7efaecffa1379b9bc21fb5dc6b7767ff2d288f71689bf933
 
 LABEL "org.opencontainers.image.description"="Kittens Game with Kitten Science DNA"
 
