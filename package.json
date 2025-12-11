@@ -38,7 +38,7 @@
     "@types/koa__cors": "5.0.1",
     "@types/koa-router": "7.4.9",
     "@types/node": "24.10.1",
-    "@types/web": "0.0.297",
+    "@types/web": "0.0.298",
     "@types/ws": "8.18.1",
     "esbuild": "0.27.1",
     "jsdom": "27.2.0",
