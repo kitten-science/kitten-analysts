@@ -28,7 +28,7 @@ export class KittensGameRemote {
   wss: WebSocketServer;
 
   ks_iterate_duration = new Histogram({
-    buckets: [...linearBuckets(0, 1, 100), ...exponentialBuckets(100, 1.125, 30)],
+    buckets: [...linearBuckets(0, 0.1, 100), ...exponentialBuckets(10, 1.25, 30)],
     help: "How long each iteration of KS took.",
     labelNames: ["client_type", "guid", "location", "manager"] as const,
     name: "ks_iterate_duration",
