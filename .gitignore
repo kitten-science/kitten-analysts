@@ -1,7 +1,7 @@
+examples/
 lib/
 node_modules/
 output/
-tsconfig.tsbuildinfo
-
-examples/
 overlay/
+.npmrc
+tsconfig.tsbuildinfo

@@ -8,7 +8,7 @@ import { sleep } from "@oliversalzburg/js-utils/async/async.js";
 import type { AnyFunction } from "@oliversalzburg/js-utils/core.js";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
 import { compressToUTF16 } from "lz-string";
-import { exponentialBuckets, Histogram, linearBuckets } from "prom-client";
+import { exponentialBuckets, Gauge, Histogram, linearBuckets } from "prom-client";
 import { type AddressInfo, type RawData, WebSocket, WebSocketServer } from "ws";
 import { LOCAL_STORAGE_PATH } from "../globals.js";
 import type { KittenAnalystsMessage, KittenAnalystsMessageId } from "../KittenAnalysts.js";
@@ -32,6 +32,16 @@ export class KittensGameRemote {
     help: "How long each iteration of KS took.",
     labelNames: ["client_type", "guid", "location", "manager"] as const,
     name: "ks_iterate_duration",
+  });
+  ks_price_cache_hits = new Gauge({
+    help: "How many prices were already cached.",
+    labelNames: ["client_type", "guid", "location"] as const,
+    name: "ks_price_cache_hits",
+  });
+  ks_price_cache_misses = new Gauge({
+    help: "How many prices had to be calculated.",
+    labelNames: ["client_type", "guid", "location"] as const,
+    name: "ks_price_cache_misses",
   });
 
   #lastKnownHeadlessSocket: RemoteConnection | null = null;
@@ -139,6 +149,23 @@ export class KittensGameRemote {
               timeTaken,
             );
           }
+
+          this.ks_price_cache_hits.set(
+            {
+              client_type: message.location.includes("headless.html") ? "headless" : "browser",
+              guid: message.guid,
+              location: message.location,
+            },
+            payload.priceCacheHits ?? 0,
+          );
+          this.ks_price_cache_misses.set(
+            {
+              client_type: message.location.includes("headless.html") ? "headless" : "browser",
+              guid: message.guid,
+              location: message.location,
+            },
+            payload.priceCacheMisses ?? 0,
+          );
 
           return;
         }
