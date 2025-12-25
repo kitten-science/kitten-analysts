@@ -68,8 +68,6 @@ const PORT_HTTP_METRICS = process.env.PORT_WS_BACKEND
 const PORT_WS_BACKEND = process.env.PORT_WS_BACKEND ? Number(process.env.PORT_WS_BACKEND) : 9093;
 const PROTOCOL_DEBUG = Boolean(process.env.PROTOCOL_DEBUG);
 
-mkdirSync(LOCAL_STORAGE_PATH);
-
 const saveStore = new Map<string, KGNetSavePersisted>();
 saveStore.set("ka-internal-savestate", {
   archived: false,
@@ -232,6 +230,7 @@ routerNetwork.post("/kgnet/save/upload", context => {
       timestamp: Date.now(),
     };
     saveStore.set(gameGUID, savegame);
+    mkdirSync(LOCAL_STORAGE_PATH);
     writeFileSync(`${LOCAL_STORAGE_PATH}/${gameGUID}.json`, JSON.stringify(savegame));
 
     // Rebuild payload to also contain the fixed-string telemetry GUID.
@@ -249,6 +248,7 @@ routerNetwork.post("/kgnet/save/upload", context => {
       timestamp: Date.now(),
     };
     saveStore.set("ka-internal-savestate", savegameEphemeral);
+    mkdirSync(LOCAL_STORAGE_PATH);
     writeFileSync(
       `${LOCAL_STORAGE_PATH}/ka-internal-savestate.json`,
       JSON.stringify(savegameEphemeral),
@@ -288,6 +288,7 @@ routerNetwork.post("/kgnet/save/update", context => {
 
     existingSave.archived = gameSave.metadata?.archived === "true";
     existingSave.label = gameSave.metadata?.label ?? existingSave.label;
+    mkdirSync(LOCAL_STORAGE_PATH);
     writeFileSync(`${LOCAL_STORAGE_PATH}/${gameGUID}.json`, JSON.stringify(existingSave));
     saveStore.set(gameGUID, existingSave);
     // process.stderr.write("=> Savegame persisted to disc.\n");
