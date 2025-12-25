@@ -1,4 +1,4 @@
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type {
@@ -67,6 +67,8 @@ const PORT_HTTP_METRICS = process.env.PORT_WS_BACKEND
   : 9091;
 const PORT_WS_BACKEND = process.env.PORT_WS_BACKEND ? Number(process.env.PORT_WS_BACKEND) : 9093;
 const PROTOCOL_DEBUG = Boolean(process.env.PROTOCOL_DEBUG);
+
+mkdirSync(LOCAL_STORAGE_PATH);
 
 const saveStore = new Map<string, KGNetSavePersisted>();
 saveStore.set("ka-internal-savestate", {
