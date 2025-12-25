@@ -110,6 +110,8 @@ export type MessageCache = typeof cache;
 const register = new Registry();
 
 register.registerMetric(remote.ks_iterate_duration);
+register.registerMetric(remote.ks_price_cache_hits);
+register.registerMetric(remote.ks_price_cache_misses);
 
 register.registerMetric(kg_building_value(cache, remote));
 register.registerMetric(kg_building_on(cache, remote));
