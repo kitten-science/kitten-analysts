@@ -114,7 +114,7 @@ jobs:
       pages: write
       pull-requests: read
       security-events: write
-    uses: oliversalzburg/workflows/.github/workflows/publish-oci.yml@main
+    uses: oliversalzburg/workflows/.github/workflows/publish-oci.yml@1ba99b645bcdde631e6a535a8578e82edce3c562 # main
     with:
       artifact-name: backend-output
       containerfile: backend.Containerfile
@@ -142,7 +142,7 @@ jobs:
       pull-requests: read
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
+    uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@1ba99b645bcdde631e6a535a8578e82edce3c562 # main
     with:
       dist-tag: ${{ needs.params.outputs.release-tag }}
       version: ${{ needs.changelog.outputs.version }}
