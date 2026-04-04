@@ -34,6 +34,7 @@
     "bracketSpacing": true,
     "enabled": true,
     "formatWithErrors": false,
+    "includes": ["!*.md"],
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf",
@@ -61,7 +62,6 @@
       "semicolons": "always",
       "trailingCommas": "all"
     },
-
     "globals": ["exports"],
     "linter": {
       "enabled": true
@@ -125,6 +125,17 @@
       }
     }
   },
-  "overrides": [{ "formatter": { "indentWidth": 4 }, "includes": ["**/*.md"] }],
-  "vcs": { "clientKind": "git", "enabled": true, "useIgnoreFile": true }
+  "overrides": [
+    {
+      "formatter": {
+        "indentWidth": 4
+      },
+      "includes": ["**/*.md"]
+    }
+  ],
+  "vcs": {
+    "clientKind": "git",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
 }
