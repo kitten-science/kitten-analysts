@@ -9,10 +9,10 @@ import type {
 } from "@kitten-science/kitten-scientists/types/index.js";
 import { bodyParser } from "@koa/bodyparser";
 import cors from "@koa/cors";
+import Router from "@koa/router";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
 import { redirectErrorsToConsole } from "@oliversalzburg/js-utils/errors/console.js";
 import Koa from "koa";
-import Router from "koa-router";
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 import { Registry } from "prom-client";
 import { LOCAL_STORAGE_PATH } from "./globals.js";

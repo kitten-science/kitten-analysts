@@ -13,11 +13,11 @@ docs:
 git-hook:
 	echo "make pretty" > .git/hooks/pre-commit; chmod +x .git/hooks/pre-commit
 
-pretty: node_modules
+pretty: node_modules/.package-lock.json
 	npm exec -- biome check --write --no-errors-on-unmatched
 	npm pkg fix
 
-lint: node_modules
+lint: node_modules/.package-lock.json
 	npm exec -- biome check .
 	npm exec -- tsc --noEmit
 
@@ -28,21 +28,23 @@ run: output
 	@node output/entrypoint-backend.js
 
 
-node_modules:
-	npm install
+package-lock.json: package.json
+	npm install --package-lock-only
+node_modules/.package-lock.json: package-lock.json
+	npm ci
 
-lib: node_modules
+lib: node_modules/.package-lock.json
 	npm exec -- tsc --build
 
-output: node_modules
+output: node_modules/.package-lock.json
 	npm exec -- vite --config vite.config.user.js build
 
 .PHONY: entrypoints
-entrypoints: node_modules
+entrypoints: node_modules/.package-lock.json
 	node build.js
 
 .PHONY: injectable
-injectable: node_modules
+injectable: node_modules/.package-lock.json
 	npm exec -- vite --config vite.config.inject.js build
 	MINIFY=true npm exec -- vite --config vite.config.inject.js build
 	mkdir -p devcontainer/overlay/ && cp output/kitten-analysts.inject.js* devcontainer/overlay/
@@ -50,6 +52,6 @@ injectable: node_modules
 	rm devcontainer/overlay/*.min.inject.js* devcontainer/overlay/*.user.js*
 
 .PHONY: userscript
-userscript: node_modules
+userscript: node_modules/.package-lock.json
 	npm exec -- vite --config vite.config.user.js build
 	MINIFY=true npm exec -- vite --config vite.config.user.js build
