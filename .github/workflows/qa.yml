@@ -66,10 +66,16 @@ jobs:
   qa:
     name: 🔹 QA
     uses: oliversalzburg/workflows/.github/workflows/qa-browser-app.yml@main
+    permissions:
+      contents: read
+      packages: read
 
   qa-backend:
     name: 🔹 Backend
     uses: oliversalzburg/workflows/.github/workflows/qa-nodejs-oci.yml@main
+    permissions:
+      contents: read
+      packages: read
     with:
       artifact-name: backend-output
       artifact-contents: |

@@ -112,6 +112,9 @@ jobs:
     needs:
       - changelog
     uses: ./.github/workflows/qa.yml
+    permissions:
+      contents: read
+      packages: read
 
   publish-backend:
     if: success() && needs.params.outputs.publish-oci == 'true'
