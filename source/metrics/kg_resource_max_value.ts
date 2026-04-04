@@ -4,25 +4,35 @@ import type { MessageCache } from "../entrypoint-backend.js";
 import type { KittensGameRemote } from "../network/KittensGameRemote.js";
 import { gaugeFactory } from "./factory.js";
 
-export const kg_resource_max_value = (cache: MessageCache, remote: KittensGameRemote) =>
-  gaugeFactory({
-    cache,
-    extract(client_type, guid, location, element, subject) {
-      subject.set(
-        {
-          client_type,
-          craftable: element.craftable.toString(),
-          guid,
-          label: ucfirst(element.label),
-          location,
-          name: element.name,
-        },
-        roundTo(element.maxValue, 2),
-      );
-    },
-    help: "The current limit of your storage pool for the given resource.",
-    labelNames: ["client_type", "guid", "name", "label", "location", "craftable"] as const,
-    name: "kg_resource_max_value",
-    remote,
-    require: "getResourcePool",
-  });
+export const kg_resource_max_value = (
+	cache: MessageCache,
+	remote: KittensGameRemote,
+) =>
+	gaugeFactory({
+		cache,
+		extract(client_type, guid, location, element, subject) {
+			subject.set(
+				{
+					client_type,
+					craftable: element.craftable.toString(),
+					guid,
+					label: ucfirst(element.label),
+					location,
+					name: element.name,
+				},
+				roundTo(element.maxValue, 2),
+			);
+		},
+		help: "The current limit of your storage pool for the given resource.",
+		labelNames: [
+			"client_type",
+			"guid",
+			"name",
+			"label",
+			"location",
+			"craftable",
+		] as const,
+		name: "kg_resource_max_value",
+		remote,
+		require: "getResourcePool",
+	});

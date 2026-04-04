@@ -1,305 +1,352 @@
 import { writeFileSync } from "node:fs";
 import type { FrameContext } from "@kitten-science/kitten-scientists/Engine.js";
 import type {
-  KGNetSaveFromAnalysts,
-  KGNetSavePersisted,
+	KGNetSaveFromAnalysts,
+	KGNetSavePersisted,
 } from "@kitten-science/kitten-scientists/types/index.js";
 import { sleep } from "@oliversalzburg/js-utils/async/async.js";
 import type { AnyFunction } from "@oliversalzburg/js-utils/core.js";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
 import { compressToUTF16 } from "lz-string";
-import { exponentialBuckets, Gauge, Histogram, linearBuckets } from "prom-client";
+import {
+	exponentialBuckets,
+	Gauge,
+	Histogram,
+	linearBuckets,
+} from "prom-client";
 import { type AddressInfo, type RawData, WebSocket, WebSocketServer } from "ws";
 import { LOCAL_STORAGE_PATH } from "../globals.js";
-import type { KittenAnalystsMessage, KittenAnalystsMessageId } from "../KittenAnalysts.js";
+import type {
+	KittenAnalystsMessage,
+	KittenAnalystsMessageId,
+} from "../KittenAnalysts.js";
 import { identifyExchange } from "../tools/MessageFormat.js";
 
 interface RemoteConnection {
-  ws: WebSocket;
-  isAlive: boolean;
+	ws: WebSocket;
+	isAlive: boolean;
 }
 export class KittensGameRemote {
-  location: string;
-  port: number;
-  pendingRequests = new Map<string, { resolve: AnyFunction; reject: AnyFunction }>();
-  printProtocolMessages: boolean;
-  saveStore: Map<string, KGNetSavePersisted>;
-  sockets = new Set<RemoteConnection>();
-  wss: WebSocketServer;
+	location: string;
+	port: number;
+	pendingRequests = new Map<
+		string,
+		{ resolve: AnyFunction; reject: AnyFunction }
+	>();
+	printProtocolMessages: boolean;
+	saveStore: Map<string, KGNetSavePersisted>;
+	sockets = new Set<RemoteConnection>();
+	wss: WebSocketServer;
 
-  ks_iterate_duration = new Histogram({
-    buckets: [...linearBuckets(0, 0.1, 100), ...exponentialBuckets(10, 1.25, 30)],
-    help: "How long each iteration of KS took.",
-    labelNames: ["client_type", "guid", "location", "manager"] as const,
-    name: "ks_iterate_duration",
-  });
-  ks_price_cache_hits = new Gauge({
-    help: "How many prices were already cached.",
-    labelNames: ["client_type", "guid", "location"] as const,
-    name: "ks_price_cache_hits",
-  });
-  ks_price_cache_misses = new Gauge({
-    help: "How many prices had to be calculated.",
-    labelNames: ["client_type", "guid", "location"] as const,
-    name: "ks_price_cache_misses",
-  });
+	ks_iterate_duration = new Histogram({
+		buckets: [
+			...linearBuckets(0, 0.1, 100),
+			...exponentialBuckets(10, 1.25, 30),
+		],
+		help: "How long each iteration of KS took.",
+		labelNames: ["client_type", "guid", "location", "manager"] as const,
+		name: "ks_iterate_duration",
+	});
+	ks_price_cache_hits = new Gauge({
+		help: "How many prices were already cached.",
+		labelNames: ["client_type", "guid", "location"] as const,
+		name: "ks_price_cache_hits",
+	});
+	ks_price_cache_misses = new Gauge({
+		help: "How many prices had to be calculated.",
+		labelNames: ["client_type", "guid", "location"] as const,
+		name: "ks_price_cache_misses",
+	});
 
-  #lastKnownHeadlessSocket: RemoteConnection | null = null;
+	#lastKnownHeadlessSocket: RemoteConnection | null = null;
 
-  constructor(
-    saveStore: Map<string, KGNetSavePersisted>,
-    port = 9093,
-    printProtocolMessages = false,
-  ) {
-    this.port = port;
-    this.printProtocolMessages = printProtocolMessages;
-    this.saveStore = saveStore;
-    this.wss = new WebSocketServer({ port });
-    this.location = `ws://${(this.wss.address() as AddressInfo | null)?.address ?? "localhost"}:${this.port}/`;
+	constructor(
+		saveStore: Map<string, KGNetSavePersisted>,
+		port = 9093,
+		printProtocolMessages = false,
+	) {
+		this.port = port;
+		this.printProtocolMessages = printProtocolMessages;
+		this.saveStore = saveStore;
+		this.wss = new WebSocketServer({ port });
+		this.location = `ws://${(this.wss.address() as AddressInfo | null)?.address ?? "localhost"}:${this.port}/`;
 
-    this.wss.on("listening", () => {
-      process.stderr.write(`WS server listening on port ${port}...\n`);
-    });
+		this.wss.on("listening", () => {
+			process.stderr.write(`WS server listening on port ${port}...\n`);
+		});
 
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const host = this;
-    this.wss.on("connection", ws => {
-      ws.on("error", console.error);
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		const host = this;
+		this.wss.on("connection", (ws) => {
+			ws.on("error", console.error);
 
-      const socket = { isAlive: true, ws };
-      this.sockets.add(socket);
-      ws.on("pong", () => {
-        socket.isAlive = true;
-      });
+			const socket = { isAlive: true, ws };
+			this.sockets.add(socket);
+			ws.on("pong", () => {
+				socket.isAlive = true;
+			});
 
-      ws.on("message", function (data) {
-        host.handleMessage(this, data);
-      });
+			ws.on("message", function (data) {
+				host.handleMessage(this, data);
+			});
 
-      void this.sendMessage({ type: "connected" });
-    });
+			void this.sendMessage({ type: "connected" });
+		});
 
-    const interval = setInterval(() => {
-      for (const socket of [...this.sockets.values()]) {
-        if (!socket.isAlive) {
-          socket.ws.terminate();
-          this.sockets.delete(socket);
-          continue;
-        }
+		const interval = setInterval(() => {
+			for (const socket of [...this.sockets.values()]) {
+				if (!socket.isAlive) {
+					socket.ws.terminate();
+					this.sockets.delete(socket);
+					continue;
+				}
 
-        socket.isAlive = false;
-        socket.ws.ping();
-      }
-    }, 30000);
+				socket.isAlive = false;
+				socket.ws.ping();
+			}
+		}, 30000);
 
-    this.wss.on("close", () => {
-      clearInterval(interval);
-    });
-  }
+		this.wss.on("close", () => {
+			clearInterval(interval);
+		});
+	}
 
-  closeAll() {
-    for (const socket of this.sockets) {
-      socket.ws.close();
-    }
-    this.wss.close();
-  }
+	closeAll() {
+		for (const socket of this.sockets) {
+			socket.ws.close();
+		}
+		this.wss.close();
+	}
 
-  handleMessage(socket: WebSocket, data: RawData) {
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    const message = JSON.parse(data.toString()) as KittenAnalystsMessage<KittenAnalystsMessageId>;
+	handleMessage(socket: WebSocket, data: RawData) {
+		// eslint-disable-next-line @typescript-eslint/no-base-to-string
+		const message = JSON.parse(
+			data.toString(),
+		) as KittenAnalystsMessage<KittenAnalystsMessageId>;
 
-    if (message.location.includes("headless.html")) {
-      this.#lastKnownHeadlessSocket = { isAlive: true, ws: socket };
-    }
+		if (message.location.includes("headless.html")) {
+			this.#lastKnownHeadlessSocket = { isAlive: true, ws: socket };
+		}
 
-    if (!message.responseId) {
-      switch (message.type) {
-        case "connected": {
-          process.stderr.write(`=> ${message.client_type}:${message.location} connected.\n`);
-          return;
-        }
+		if (!message.responseId) {
+			switch (message.type) {
+				case "connected": {
+					process.stderr.write(
+						`=> ${message.client_type}:${message.location} connected.\n`,
+					);
+					return;
+				}
 
-        case "reportFrame": {
-          const payload = message.data as FrameContext;
-          const delta = payload.exit - payload.entry;
-          if (this.printProtocolMessages)
-            process.stderr.write(`=> Received frame report (${message.location}).\n`);
+				case "reportFrame": {
+					const payload = message.data as FrameContext;
+					const delta = payload.exit - payload.entry;
+					if (this.printProtocolMessages)
+						process.stderr.write(
+							`=> Received frame report (${message.location}).\n`,
+						);
 
-          this.ks_iterate_duration.observe(
-            {
-              client_type: message.location.includes("headless.html") ? "headless" : "browser",
-              guid: message.guid,
-              location: message.location,
-              manager: "all",
-            },
-            delta,
-          );
-          for (const [measurement, timeTaken] of Object.entries(payload.measurements)) {
-            if (isNil(timeTaken)) {
-              continue;
-            }
+					this.ks_iterate_duration.observe(
+						{
+							client_type: message.location.includes("headless.html")
+								? "headless"
+								: "browser",
+							guid: message.guid,
+							location: message.location,
+							manager: "all",
+						},
+						delta,
+					);
+					for (const [measurement, timeTaken] of Object.entries(
+						payload.measurements,
+					)) {
+						if (isNil(timeTaken)) {
+							continue;
+						}
 
-            this.ks_iterate_duration.observe(
-              {
-                client_type: message.location.includes("headless.html") ? "headless" : "browser",
-                guid: message.guid,
-                location: message.location,
-                manager: measurement,
-              },
-              timeTaken,
-            );
-          }
+						this.ks_iterate_duration.observe(
+							{
+								client_type: message.location.includes("headless.html")
+									? "headless"
+									: "browser",
+								guid: message.guid,
+								location: message.location,
+								manager: measurement,
+							},
+							timeTaken,
+						);
+					}
 
-          this.ks_price_cache_hits.set(
-            {
-              client_type: message.location.includes("headless.html") ? "headless" : "browser",
-              guid: message.guid,
-              location: message.location,
-            },
-            payload.priceCacheHits ?? 0,
-          );
-          this.ks_price_cache_misses.set(
-            {
-              client_type: message.location.includes("headless.html") ? "headless" : "browser",
-              guid: message.guid,
-              location: message.location,
-            },
-            payload.priceCacheMisses ?? 0,
-          );
+					this.ks_price_cache_hits.set(
+						{
+							client_type: message.location.includes("headless.html")
+								? "headless"
+								: "browser",
+							guid: message.guid,
+							location: message.location,
+						},
+						payload.priceCacheHits ?? 0,
+					);
+					this.ks_price_cache_misses.set(
+						{
+							client_type: message.location.includes("headless.html")
+								? "headless"
+								: "browser",
+							guid: message.guid,
+							location: message.location,
+						},
+						payload.priceCacheMisses ?? 0,
+					);
 
-          return;
-        }
-        case "reportSavegame": {
-          const payload = message.data as KGNetSaveFromAnalysts;
-          if (this.printProtocolMessages)
-            process.stderr.write(`=> Received savegame (${message.location}).\n`);
+					return;
+				}
+				case "reportSavegame": {
+					const payload = message.data as KGNetSaveFromAnalysts;
+					if (this.printProtocolMessages)
+						process.stderr.write(
+							`=> Received savegame (${message.location}).\n`,
+						);
 
-          const isHeadlessReport = message.location.includes("headless.html");
-          if (isHeadlessReport) {
-            payload.telemetry.guid = "ka-internal-savestate";
-          }
+					const isHeadlessReport = message.location.includes("headless.html");
+					if (isHeadlessReport) {
+						payload.telemetry.guid = "ka-internal-savestate";
+					}
 
-          const calendar = payload.calendar;
-          const saveDataCompressed = compressToUTF16(JSON.stringify(payload));
-          const savegame: KGNetSavePersisted = {
-            archived: false,
-            guid: payload.telemetry.guid,
-            index: { calendar: { day: calendar.day, year: calendar.year } },
-            label: isHeadlessReport ? "Background Game" : "Browser Game",
-            saveData: saveDataCompressed,
-            size: saveDataCompressed.length,
-            timestamp: Date.now(),
-          };
+					const calendar = payload.calendar;
+					const saveDataCompressed = compressToUTF16(JSON.stringify(payload));
+					const savegame: KGNetSavePersisted = {
+						archived: false,
+						guid: payload.telemetry.guid,
+						index: { calendar: { day: calendar.day, year: calendar.year } },
+						label: isHeadlessReport ? "Background Game" : "Browser Game",
+						saveData: saveDataCompressed,
+						size: saveDataCompressed.length,
+						timestamp: Date.now(),
+					};
 
-          this.saveStore.set(payload.telemetry.guid, savegame);
-          try {
-            writeFileSync(
-              `${LOCAL_STORAGE_PATH}/${payload.telemetry.guid}.json`,
-              JSON.stringify(savegame),
-            );
-            // process.stderr.write("=> Savegame persisted to disc.\n");
-          } catch (error) {
-            console.error("!> Error while persisting savegame to disc!", error);
-          }
+					this.saveStore.set(payload.telemetry.guid, savegame);
+					try {
+						writeFileSync(
+							`${LOCAL_STORAGE_PATH}/${payload.telemetry.guid}.json`,
+							JSON.stringify(savegame),
+						);
+						// process.stderr.write("=> Savegame persisted to disc.\n");
+					} catch (error) {
+						console.error("!> Error while persisting savegame to disc!", error);
+					}
 
-          return;
-        }
-        default:
-          process.stderr.write(
-            `!> Report with type '${message.type}' is unexpected! Message ignored.\n`,
-          );
-          return;
-      }
-    }
+					return;
+				}
+				default:
+					process.stderr.write(
+						`!> Report with type '${message.type}' is unexpected! Message ignored.\n`,
+					);
+					return;
+			}
+		}
 
-    if (!this.pendingRequests.has(message.responseId)) {
-      process.stderr.write(
-        `!> Response ID '${message.responseId}' is unexpected! Message ignored.\n`,
-      );
-      return;
-    }
+		if (!this.pendingRequests.has(message.responseId)) {
+			process.stderr.write(
+				`!> Response ID '${message.responseId}' is unexpected! Message ignored.\n`,
+			);
+			return;
+		}
 
-    const pendingRequest = this.pendingRequests.get(message.responseId);
-    this.pendingRequests.delete(message.responseId);
+		const pendingRequest = this.pendingRequests.get(message.responseId);
+		this.pendingRequests.delete(message.responseId);
 
-    pendingRequest?.resolve(message);
-    if (this.printProtocolMessages)
-      process.stderr.write(`=> Request ID '${message.responseId}' was resolved.\n`);
-  }
+		pendingRequest?.resolve(message);
+		if (this.printProtocolMessages)
+			process.stderr.write(
+				`=> Request ID '${message.responseId}' was resolved.\n`,
+			);
+	}
 
-  sendMessage<TMessage extends KittenAnalystsMessageId>(
-    message: Omit<KittenAnalystsMessage<TMessage>, "client_type" | "location" | "guid">,
-  ): Promise<Array<KittenAnalystsMessage<TMessage> | null>> {
-    const clientRequests = [...this.sockets.values()].map(socket =>
-      this.#sendMessageToSocket(
-        {
-          ...message,
-          client_type: "backend",
-          guid: "ka-backend",
-          location: this.location,
-        },
-        socket,
-      ),
-    );
+	sendMessage<TMessage extends KittenAnalystsMessageId>(
+		message: Omit<
+			KittenAnalystsMessage<TMessage>,
+			"client_type" | "location" | "guid"
+		>,
+	): Promise<Array<KittenAnalystsMessage<TMessage> | null>> {
+		const clientRequests = [...this.sockets.values()].map((socket) =>
+			this.#sendMessageToSocket(
+				{
+					...message,
+					client_type: "backend",
+					guid: "ka-backend",
+					location: this.location,
+				},
+				socket,
+			),
+		);
 
-    return Promise.all(clientRequests);
-  }
+		return Promise.all(clientRequests);
+	}
 
-  #sendMessageToSocket<TMessage extends KittenAnalystsMessageId>(
-    message: KittenAnalystsMessage<TMessage>,
-    socket: RemoteConnection,
-  ): Promise<KittenAnalystsMessage<TMessage> | null> {
-    const requestId = crypto.randomUUID();
-    message.responseId = requestId;
+	#sendMessageToSocket<TMessage extends KittenAnalystsMessageId>(
+		message: KittenAnalystsMessage<TMessage>,
+		socket: RemoteConnection,
+	): Promise<KittenAnalystsMessage<TMessage> | null> {
+		const requestId = crypto.randomUUID();
+		message.responseId = requestId;
 
-    if (this.printProtocolMessages) process.stderr.write(`<= ${identifyExchange(message)}...\n`);
+		if (this.printProtocolMessages)
+			process.stderr.write(`<= ${identifyExchange(message)}...\n`);
 
-    const request = new Promise<KittenAnalystsMessage<TMessage> | null>((resolve, reject) => {
-      if (
-        !socket.isAlive ||
-        socket.ws.readyState === WebSocket.CLOSED ||
-        socket.ws.readyState === WebSocket.CLOSING
-      ) {
-        process.stderr.write("Send request can't be handled, because socket is dead!\n");
-        socket.isAlive = false;
-        resolve(null);
-        return;
-      }
+		const request = new Promise<KittenAnalystsMessage<TMessage> | null>(
+			(resolve, reject) => {
+				if (
+					!socket.isAlive ||
+					socket.ws.readyState === WebSocket.CLOSED ||
+					socket.ws.readyState === WebSocket.CLOSING
+				) {
+					process.stderr.write(
+						"Send request can't be handled, because socket is dead!\n",
+					);
+					socket.isAlive = false;
+					resolve(null);
+					return;
+				}
 
-      this.pendingRequests.set(requestId, { reject, resolve });
-      socket.ws.send(JSON.stringify(message), error => {
-        if (error) {
-          reject(error);
-        }
-      });
-    });
+				this.pendingRequests.set(requestId, { reject, resolve });
+				socket.ws.send(JSON.stringify(message), (error) => {
+					if (error) {
+						reject(error);
+					}
+				});
+			},
+		);
 
-    return Promise.race([request, sleep(2000).then(() => null)]);
-  }
+		return Promise.race([request, sleep(2000).then(() => null)]);
+	}
 
-  toHeadless<TMessage extends KittenAnalystsMessageId>(
-    message: Omit<KittenAnalystsMessage<TMessage>, "client_type" | "location" | "guid">,
-  ): Promise<KittenAnalystsMessage<TMessage> | null> {
-    if (isNil(this.#lastKnownHeadlessSocket)) {
-      process.stderr.write("No headless connection registered. Message is dropped!\n");
-      return Promise.resolve(null);
-    }
+	toHeadless<TMessage extends KittenAnalystsMessageId>(
+		message: Omit<
+			KittenAnalystsMessage<TMessage>,
+			"client_type" | "location" | "guid"
+		>,
+	): Promise<KittenAnalystsMessage<TMessage> | null> {
+		if (isNil(this.#lastKnownHeadlessSocket)) {
+			process.stderr.write(
+				"No headless connection registered. Message is dropped!\n",
+			);
+			return Promise.resolve(null);
+		}
 
-    if (!this.#lastKnownHeadlessSocket.isAlive) {
-      process.stderr.write(
-        "Trying to send to headless session, but last known headless socket is no longer alive. Request is dropped!\n",
-      );
-      return Promise.resolve(null);
-    }
+		if (!this.#lastKnownHeadlessSocket.isAlive) {
+			process.stderr.write(
+				"Trying to send to headless session, but last known headless socket is no longer alive. Request is dropped!\n",
+			);
+			return Promise.resolve(null);
+		}
 
-    return this.#sendMessageToSocket(
-      {
-        ...message,
-        client_type: "backend",
-        guid: "ka-backend",
-        location: this.location,
-      },
-      this.#lastKnownHeadlessSocket,
-    );
-  }
+		return this.#sendMessageToSocket(
+			{
+				...message,
+				client_type: "backend",
+				guid: "ka-backend",
+				location: this.location,
+			},
+			this.#lastKnownHeadlessSocket,
+		);
+	}
 }
