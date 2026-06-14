@@ -41,7 +41,7 @@
 		"@types/node": "25.9.3",
 		"@types/web": "0.0.350",
 		"@types/ws": "8.18.1",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"jsdom": "29.1.1",
 		"koa": "3.2.1",
 		"lz-string": "1.5.0",
