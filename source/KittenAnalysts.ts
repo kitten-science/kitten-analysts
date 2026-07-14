@@ -22,6 +22,8 @@ export type KittenAnalystsMessageId =
 	| "connected"
 	| "getBuildings"
 	| "getCalendar"
+	| "getEnergy"
+	| "getJobs"
 	| "getPollution"
 	| "getRaces"
 	| "getResourcePool"
@@ -51,6 +53,18 @@ export type PayloadCalendar = Array<{
 	seasonsPerYear: number;
 	year: number;
 	yearsPerCycle: number;
+}>;
+export type PayloadEnergy = Array<{
+	consumption: number;
+	label: string;
+	name: string;
+	production: number;
+}>;
+export type PayloadJobs = Array<{
+	label: string;
+	name: string;
+	unlocked: boolean;
+	value: number;
 }>;
 export type PayloadPollution = Array<{
 	label: string;
@@ -91,25 +105,29 @@ export interface KittenAnalystsMessage<
 	TMessage extends KittenAnalystsMessageId,
 	TData = TMessage extends "getBuildings"
 		? PayloadBuildings
-		: TMessage extends "getCalendar"
-			? PayloadCalendar
-			: TMessage extends "getPollution"
-				? PayloadPollution
-				: TMessage extends "getRaces"
-					? PayloadRaces
-					: TMessage extends "getResourcePool"
-						? PayloadResources
-						: TMessage extends "getStatistics"
-							? PayloadStatistics
-							: TMessage extends "getTechnologies"
-								? PayloadTechnologies
-								: TMessage extends "reportFrame"
-									? unknown
-									: TMessage extends "reportSavegame"
-										? unknown
-										: TMessage extends "injectSavegame"
-											? KGNetSavePersisted
-											: never,
+		: TMessage extends "getEnergy"
+			? PayloadEnergy
+			: TMessage extends "getJobs"
+				? PayloadJobs
+				: TMessage extends "getCalendar"
+					? PayloadCalendar
+					: TMessage extends "getPollution"
+						? PayloadPollution
+						: TMessage extends "getRaces"
+							? PayloadRaces
+							: TMessage extends "getResourcePool"
+								? PayloadResources
+								: TMessage extends "getStatistics"
+									? PayloadStatistics
+									: TMessage extends "getTechnologies"
+										? PayloadTechnologies
+										: TMessage extends "reportFrame"
+											? unknown
+											: TMessage extends "reportSavegame"
+												? unknown
+												: TMessage extends "injectSavegame"
+													? KGNetSavePersisted
+													: never,
 > {
 	/**
 	 * The payload of the message.
@@ -438,6 +456,60 @@ export class KittenAnalysts {
 					location: this.location,
 					responseId: message.responseId,
 
+					type: message.type,
+				};
+			}
+
+			case "getEnergy": {
+				const energyBuildings = game.bld.meta[0].meta.filter(
+					(_) =>
+						!isNil(_.effects?.energyProduction) ||
+						!isNil(_.effects?.energyConsumption),
+				);
+
+				const data: PayloadEnergy = [
+					{
+						consumption: game.resPool.energyCons,
+						label: "Total",
+						name: "energy",
+						production: game.resPool.energyProd,
+					},
+					...energyBuildings.map((_) => ({
+						consumption: (_.effects?.energyConsumption ?? 0) * _.on,
+						label: _.label ?? "",
+						name: _.name,
+						production: (_.effects?.energyProduction ?? 0) * _.on,
+					})),
+				];
+
+				return {
+					client_type: this.location.includes("headless.html")
+						? "headless"
+						: "browser",
+					data,
+					guid: game.telemetry.guid,
+					location: this.location,
+					responseId: message.responseId,
+					type: message.type,
+				};
+			}
+
+			case "getJobs": {
+				const data: PayloadJobs = game.village.jobs.map((job) => ({
+					label: job.title,
+					name: job.name,
+					unlocked: job.unlocked,
+					value: job.value,
+				}));
+
+				return {
+					client_type: this.location.includes("headless.html")
+						? "headless"
+						: "browser",
+					data,
+					guid: game.telemetry.guid,
+					location: this.location,
+					responseId: message.responseId,
 					type: message.type,
 				};
 			}

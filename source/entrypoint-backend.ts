@@ -21,6 +21,8 @@ import type {
 	KittenAnalystsMessageId,
 	PayloadBuildings,
 	PayloadCalendar,
+	PayloadEnergy,
+	PayloadJobs,
 	PayloadPollution,
 	PayloadRaces,
 	PayloadResources,
@@ -35,10 +37,13 @@ import { kg_clicks_total } from "./metrics/kg_clicks_total.js";
 import { kg_crafts_total } from "./metrics/kg_crafts_total.js";
 import { kg_crypto_price } from "./metrics/kg_crypto_price.js";
 import { kg_embassy_level } from "./metrics/kg_embassy_level.js";
+import { kg_energy_consumption } from "./metrics/kg_energy_consumption.js";
+import { kg_energy_production } from "./metrics/kg_energy_production.js";
 import { kg_events_observed } from "./metrics/kg_events_observed.js";
 import { kg_festival_days } from "./metrics/kg_festival_days.js";
 import { kg_kittens_average } from "./metrics/kg_kittens_average.js";
 import { kg_kittens_dead } from "./metrics/kg_kittens_dead.js";
+import { kg_kittens_job } from "./metrics/kg_kittens_job.js";
 import { kg_kittens_total } from "./metrics/kg_kittens_total.js";
 import { kg_paragon_total } from "./metrics/kg_paragon_total.js";
 import { kg_pollution_production } from "./metrics/kg_pollution_prodution.js";
@@ -105,6 +110,8 @@ const cache = new Map<
 			KittenAnalystsMessageId,
 			| PayloadBuildings
 			| PayloadCalendar
+			| PayloadEnergy
+			| PayloadJobs
 			| PayloadPollution
 			| PayloadRaces
 			| PayloadResources
@@ -131,6 +138,11 @@ register.registerMetric(kg_resource_rate(cache, remote));
 register.registerMetric(kg_embassy_level(cache, remote));
 register.registerMetric(kg_race_energy(cache, remote));
 register.registerMetric(kg_race_standing(cache, remote));
+
+register.registerMetric(kg_energy_production(cache, remote));
+register.registerMetric(kg_energy_consumption(cache, remote));
+
+register.registerMetric(kg_kittens_job(cache, remote));
 
 register.registerMetric(kg_crypto_price(cache, remote));
 register.registerMetric(kg_festival_days(cache, remote));
