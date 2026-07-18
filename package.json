@@ -51,7 +51,7 @@
 		"vite": "8.1.5",
 		"vite-plugin-css-injected-by-js": "5.0.1",
 		"vite-plugin-userscript": "0.1.3",
-		"ws": "8.21.0"
+		"ws": "8.21.1"
 	},
 	"keywords": [
 		"kittensgame"
