@@ -5,19 +5,19 @@ services:
     build:
       context: .
       dockerfile: backend.Containerfile
+    image: ghcr.io/kitten-science/kitten-analysts
+    container_name: kitten-analysts
     ports:
       # KGNet Interface
-      - "7780:7780/tcp"
-      # Kittens Game Browser UI
-      - "9080:8080/tcp"
+      #- "7780:7780/tcp"
       # Prometheus Exporter
-      - "9091:9091/tcp"
+      #- "9091:9091/tcp"
       # Kitten Analysts Websocket
       - "9093:9093"
     volumes:
       - type: bind
         source: ./examples
-        target: /local_storage
+        target: /tmp/local_storage
         read_only: false
       - type: bind
         source: ./output
@@ -25,24 +25,46 @@ services:
         read_only: true
 
   # Actual Kittens Game instance
-  game:
-    build:
-      context: .
-      dockerfile: game.Containerfile
-    network_mode: service:backend
+  #game:
+  #  build:
+  #    context: .
+  #    dockerfile: game.Containerfile
+  #  network_mode: service:backend
+  #  volumes:
+  #    - type: bind
+  #      source: ./output
+  #      target: /kittensgame/kitten-analysts
+  #      read_only: true
+  #    - type: bind
+  #      source: ./node_modules/@kitten-science/kitten-scientists/output
+  #      target: /kittensgame/kitten-scientists
+  #      read_only: true
+
+  prometheus:
+    image: docker.io/prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
     volumes:
-      - type: bind
-        source: ./output
-        target: /kittensgame/kitten-analysts
-        read_only: true
-      #- type: bind
-      #  source: ./packages/kitten-engineers/output
-      #  target: /kittensgame/kitten-engineers
-      #  read_only: true
-      - type: bind
-        source: ./node_modules/@kitten-science/kitten-scientists/output
-        target: /kittensgame/kitten-scientists
-        read_only: true
+      - ./contrib/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prom_data:/prometheus
+
+  grafana:
+    image: docker.io/grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./contrib/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./contrib/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./contrib/grafana-dashboard.json:/var/lib/grafana/dashboards/kittensgame.json
 
   # Headless container
   #ui:
@@ -53,5 +75,8 @@ services:
   #  volumes:
   #    - type: bind
   #      source: ./examples
-  #      target: /local_storage
+  #      target: /tmp/local_storage
   #      read_only: false
+
+volumes:
+  prom_data:

@@ -36,7 +36,7 @@ embassy levels, and the in-game statistics counters.
 
 - Node.js **≥ 24** and npm **≥ 11** (see `engines` in `package.json`)
 - A userscript manager ([Tampermonkey](https://www.tampermonkey.net/) recommended) for the browser
-  path, **or** [Docker](https://www.docker.com/) for the fully containerized path
+  path, **or** [Docker](https://www.docker.com/) for the fully containerized path.
 - Optionally, Prometheus + Grafana to store and visualize the metrics
 
 ## Quick start — monitor your browser playthrough
@@ -52,6 +52,9 @@ embassy levels, and the in-game statistics counters.
    `output/kitten-analysts-0.0.0-ci.user.js` (plus a minified `…-0.0.0-ci.min.user.js`). Set
    `RELEASE_VERSION` to stamp a specific version instead of `0.0.0-ci`.
 
+   You can also grab one of the builds from the [Releases](https://github.com/kitten-science/kitten-analysts/releases)
+   page of this repository.
+
 2. **Start the backend** (keep it running):
 
    ```shell
@@ -60,7 +63,12 @@ embassy levels, and the in-game statistics counters.
 
    You should see it begin listening on ports 7780, 9091, and 9093.
 
-3. **Install the userscript.** Open `output/kitten-analysts-0.0.0-ci.user.js` in Tampermonkey (drag
+   You can also pull the container image from <ghcr.io/kitten-science/kitten-analysts>. See the
+   [systemd unit](contrib/kitten-analysts.service) for an example.
+
+3. **Install the userscript.**
+
+   Open `output/kitten-analysts-0.0.0-ci.user.js` in Tampermonkey (drag
    it in, or copy its contents into a new script). The non-minified file is easiest to debug; the
    `.min` variant behaves identically. It is configured to match `https://kittensgame.com/web/` (and
    the beta/alpha and localhost variants — see `metablock.json`).
@@ -71,17 +79,19 @@ embassy levels, and the in-game statistics counters.
    > change how the game plays. If you already run Scientists, keep it and add this.
 
 4. **Open Kittens Game** at <https://kittensgame.com/web/> and reload. The userscript connects to
-   your local backend over the WebSocket. If your browser blocks the insecure `ws://localhost`
-   connection from the HTTPS page (mixed content), run the game from a local HTTP instance instead —
-   the containerized path below does exactly that.
+   your local backend over the WebSocket.
 
-5. **Scrape the metrics.** Point Prometheus at `localhost:9091`, or just check that data is flowing:
+5. **Scrape the metrics.**
+
+   Point Prometheus at `localhost:9091`, or just check that data is flowing:
 
    ```shell
    curl localhost:9091/metrics
    ```
 
-6. **Visualize.** Import [`contrib/grafana-dashboard.json`](contrib/grafana-dashboard.json) into
+6. **Visualize.**
+
+   Import [`contrib/grafana-dashboard.json`](contrib/grafana-dashboard.json) into
    Grafana, pointed at your Prometheus data source.
 
 ### Example Prometheus scrape config
@@ -108,12 +118,18 @@ docker compose up
 
 This starts:
 
-- the **backend** on `7780` / `9091` / `9093`, and
-- a **headless Kittens Game** (built from `game.Containerfile`, which clones
+- the **backend** on `9093`, and
+- a **Prometheus instance**, configured to scrape the metrics from the backend,
+- a **Grafana instance** on port `3000`, with the Prometheus instance already configured.
+  Use `admin`/`grafana` to log into the web UI.
+
+The [compose file](./docker-compose.yml) also includes examples for how to include:
+
+- a **Kittens Game server** (built from `game.Containerfile`, which clones
   [nuclear-unicorn/kittensgame](https://github.com/nuclear-unicorn/kittensgame) and injects both the
   Kitten Scientists and Kitten Analysts mods), with its UI exposed on `9080`.
 
-Scrape `localhost:9091` and import the Grafana dashboard as above.
+- 
 
 ## Development
 

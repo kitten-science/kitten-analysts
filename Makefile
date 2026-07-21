@@ -24,9 +24,8 @@ lint: node_modules/.package-lock.json
 test:
 	@echo "Kitten Analysts test in production."
 
-run: output
+run: entrypoints
 	@node output/entrypoint-backend.js
-
 
 package-lock.json: package.json
 	npm install --package-lock-only
@@ -36,7 +35,7 @@ node_modules/.package-lock.json: package-lock.json
 lib: node_modules/.package-lock.json
 	npm exec -- tsc --build
 
-output: node_modules/.package-lock.json
+output/*: node_modules/.package-lock.json
 	npm exec -- vite --config vite.config.user.js build
 
 .PHONY: entrypoints
