@@ -4,6 +4,8 @@ import type { MessageCache } from "../entrypoint-backend.js";
 import type {
 	PayloadBuildings,
 	PayloadCalendar,
+	PayloadEnergy,
+	PayloadJobs,
 	PayloadPollution,
 	PayloadRaces,
 	PayloadResources,
@@ -16,6 +18,8 @@ export const gaugeFactory = <
 	TMessage extends
 		| "getBuildings"
 		| "getCalendar"
+		| "getEnergy"
+		| "getJobs"
 		| "getPollution"
 		| "getRaces"
 		| "getResourcePool"
@@ -25,25 +29,31 @@ export const gaugeFactory = <
 	TData extends
 		| PayloadBuildings
 		| PayloadCalendar
+		| PayloadEnergy
+		| PayloadJobs
 		| PayloadPollution
 		| PayloadRaces
 		| PayloadResources
 		| PayloadStatistics
 		| PayloadTechnologies = TMessage extends "getBuildings"
 		? PayloadBuildings
-		: TMessage extends "getCalendar"
-			? PayloadCalendar
-			: TMessage extends "getPollution"
-				? PayloadPollution
-				: TMessage extends "getRaces"
-					? PayloadRaces
-					: TMessage extends "getResourcePool"
-						? PayloadResources
-						: TMessage extends "getStatistics"
-							? PayloadStatistics
-							: TMessage extends "getTechnologies"
-								? PayloadTechnologies
-								: never,
+		: TMessage extends "getEnergy"
+			? PayloadEnergy
+			: TMessage extends "getJobs"
+				? PayloadJobs
+				: TMessage extends "getCalendar"
+					? PayloadCalendar
+					: TMessage extends "getPollution"
+						? PayloadPollution
+						: TMessage extends "getRaces"
+							? PayloadRaces
+							: TMessage extends "getResourcePool"
+								? PayloadResources
+								: TMessage extends "getStatistics"
+									? PayloadStatistics
+									: TMessage extends "getTechnologies"
+										? PayloadTechnologies
+										: never,
 >(instructions: {
 	cache: MessageCache;
 	remote: KittensGameRemote;
