@@ -42,7 +42,7 @@
 		"@types/web": "0.0.353",
 		"@types/ws": "8.18.1",
 		"esbuild": "0.28.1",
-		"jsdom": "29.1.1",
+		"jsdom": "30.0.1",
 		"koa": "3.2.1",
 		"lz-string": "1.5.0",
 		"prom-client": "15.1.3",
