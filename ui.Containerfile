@@ -1,4 +1,4 @@
-FROM docker.io/library/node:24.14.0-bookworm@sha256:5a593d74b632d1c6f816457477b6819760e13624455d587eef0fa418c8d0777b
+FROM docker.io/library/node:26.10.0-bookworm@sha256:e6cfc3514df35d1cb534e83f9279a242ad6e578692ab7b56d73dadcc7c4354a0
 
 LABEL "org.opencontainers.image.description"="Headless Kittens Game"
 
