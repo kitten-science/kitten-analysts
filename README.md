@@ -12,16 +12,15 @@ in as a dependency).
 ## How it works
 
 Kitten Analysts has two halves:
-
-- A **userscript** (`kitten-analysts.user.js`) that runs *inside* a Kittens Game tab. It reads the
+- A **userscript** (`kitten-analysts.user.js`) that runs _inside_ a Kittens Game tab. It reads the
   game state and pushes it to the backend over a WebSocket.
 - A **backend** (`entrypoint-backend.js`, a Node/Koa server) that receives that data and exposes it.
   It listens on three ports:
 
-  | Port   | Purpose                                                                 |
-  | ------ | ----------------------------------------------------------------------- |
-  | `9093` | WebSocket channel to the in-game userscript                             |
-  | `9091` | Prometheus metrics endpoint (`GET /metrics`)                            |
+  | Port   | Purpose                                                                                     |
+  | ------ | ------------------------------------------------------------------------------------------- |
+  | `9093` | WebSocket channel to the in-game userscript                                                 |
+  | `9091` | Prometheus metrics endpoint (`GET /metrics`)                                                |
   | `7780` | A minimal [KGNet](https://kittensgame.com/) save-sync service (savegame upload/persistence) |
 
 The available metrics live in [`source/metrics/`](source/metrics/) — buildings, resource
@@ -73,7 +72,7 @@ embassy levels, and the in-game statistics counters.
    `.min` variant behaves identically. It is configured to match `https://kittensgame.com/web/` (and
    the beta/alpha and localhost variants — see `metablock.json`).
 
-   > Kitten Analysts is a *separate* userscript from [Kitten
+   > Kitten Analysts is a _separate_ userscript from [Kitten
    > Scientists](https://github.com/kitten-science/kitten-scientists) (the automation mod). Analysts
    > is read-only telemetry and is designed to run **alongside** Scientists — installing it won't
    > change how the game plays. If you already run Scientists, keep it and add this.
@@ -108,7 +107,7 @@ To run the backend as a long-lived service, see the sample systemd unit in
 
 ## Alternative — fully containerized (headless game + backend)
 
-Runs the backend *and* a headless copy of Kittens Game in containers, so metrics are produced
+Runs the backend _and_ a headless copy of Kittens Game in containers, so metrics are produced
 continuously without you playing in your own browser.
 
 ```shell
@@ -117,32 +116,30 @@ docker compose up
 ```
 
 This starts:
-
 - the **backend** on `9093`, and
 - a **Prometheus instance**, configured to scrape the metrics from the backend,
 - a **Grafana instance** on port `3000`, with the Prometheus instance already configured.
   Use `admin`/`grafana` to log into the web UI.
 
 The [compose file](./docker-compose.yml) also includes examples for how to include:
-
 - a **Kittens Game server** (built from `game.Containerfile`, which clones
   [nuclear-unicorn/kittensgame](https://github.com/nuclear-unicorn/kittensgame) and injects both the
   Kitten Scientists and Kitten Analysts mods), with its UI exposed on `9080`.
 
-- 
+-
 
 ## Development
 
 Common `make` targets (see the [`Makefile`](Makefile)):
 
-| Target          | What it does                                                                 |
-| --------------- | ---------------------------------------------------------------------------- |
-| `make build`    | Full build: injectable script, userscript, TypeScript lib, and entrypoints   |
-| `make run`      | Run the backend (`node output/entrypoint-backend.js`)                         |
-| `make lint`     | `biome check` + `tsc --noEmit`                                                |
-| `make pretty`   | Auto-format with Biome and fix `package.json`                                 |
-| `make clean`    | Remove build output, `node_modules`, and generated overlays                  |
-| `make git-hook` | Install a pre-commit hook that runs `make pretty`                             |
+| Target          | What it does                                                               |
+| --------------- | -------------------------------------------------------------------------- |
+| `make build`    | Full build: injectable script, userscript, TypeScript lib, and entrypoints |
+| `make run`      | Run the backend (`node output/entrypoint-backend.js`)                      |
+| `make lint`     | `biome check` + `tsc --noEmit`                                             |
+| `make pretty`   | Auto-format with Biome and fix `package.json`                              |
+| `make clean`    | Remove build output, `node_modules`, and generated overlays                |
+| `make git-hook` | Install a pre-commit hook that runs `make pretty`                          |
 
 ### Configuration
 
