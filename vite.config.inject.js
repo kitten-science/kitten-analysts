@@ -21,12 +21,16 @@ export default defineConfig({
 		},
 		minify: MINIFY ? "esbuild" : false,
 		outDir: "output",
-		rollupOptions: {
+		rolldownOptions: {
 			external: ["dojo", "jquery"],
 			output: {
 				entryFileNames: filename,
 				extend: true,
 				format: "umd",
+				globals: {
+					dojo: "dojo",
+					jquery: "$",
+				},
 			},
 		},
 		sourcemap: "hidden",
