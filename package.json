@@ -37,7 +37,6 @@
 		"@types/jsdom": "30.0.0",
 		"@types/koa": "3.0.3",
 		"@types/koa__cors": "5.0.1",
-		"@types/koa__router": "15.0.0",
 		"@types/node": "26.6.6",
 		"@types/web": "0.0.359",
 		"@types/ws": "8.18.2",
